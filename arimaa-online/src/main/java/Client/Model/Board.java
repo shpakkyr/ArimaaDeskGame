@@ -1,42 +1,30 @@
 package Client.Model;
 
+import java.util.ArrayList;
+
 public class Board {
-    private final BoardTile[][] board;
-    private final int dimension;
-
-    // Constructor will create a squared board with "dimension" attribute and set all the tiles to BoardTile.EMPTY
-    public Board(int dimension) {
-        this.dimension = dimension;
-        board = new BoardTile[dimension][dimension];
-        for (int i = 0; i < dimension; i++) {
-            for (int j = 0; j < dimension; j++) {
-                board[i][j] = BoardTile.EMPTY;
-            }
-        }
+    public static final int BOARD_SIZE = 8;
+    private final Troop[][] board;
+    public Board() {
+        board = new Troop[BOARD_SIZE][BOARD_SIZE];
+    }
+    public void placePiece(Troop piece, Position position) {
+        board[position.row()][position.column()] = piece;
+    }
+    public Troop getPieceAt(Position position) {
+        return board[position.row()][position.column()];
+    }
+    public void removePieceAt(Position position) {
+        board[position.row()][position.column()] = null;
+    }
+    public boolean isOffBoardPosition(Position position) {}
+    public void makeMove(Move move) {}
+    public Boolean hasPlayerWon(Player player, Player enemy){}
+    public ArrayList<Position> getPositionsOfPlayersPieces(Player player){}
+    public boolean isNextTo(Position position){}
+    public boolean isPositionEmpty(Position position){
+        return getPieceAt(position) == null;
     }
 
-    public int dimension() {
-        return dimension;
-    }
 
-    // Return tile with position
-    public BoardTile at(TilePos pos) {
-        return board[pos.i()][pos.j()];
-    }
-
-    // Create a new a board after move
-    public Board withTiles(TileAt... ats) {
-        //TODO
-        return new Board(8);
-    }
-
-    public static class TileAt {
-        public final BoardPos pos;
-        public final BoardTile tile;
-
-        public TileAt(BoardPos pos, BoardTile tile) {
-            this.pos = pos;
-            this.tile = tile;
-        }
-    }
 }
