@@ -1,11 +1,20 @@
 package Client.Model;
 
 public class Troop {
-    private TroopType type;
-    private Offset2D offset;
+    private final TroopType type;
+    private final PlayingSide playingSide;
+    private int currentRow;
+    private int currentCol;
 
-    public Troop(TroopType type, Offset2D offset) {
+    public Troop(TroopType type, PlayingSide playingSide, int currentRow, int currentCol) {
         this.type = type;
-        this.offset = offset;
+        this.playingSide = playingSide;
+        this.currentRow = currentRow;
+        this.currentCol = currentCol;
+    }
+
+    private boolean isMoveValid(int row, int col){
+        //TODO
+        return true;
     }
 }

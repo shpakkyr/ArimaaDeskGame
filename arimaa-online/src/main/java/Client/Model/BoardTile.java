@@ -1,6 +1,6 @@
 package Client.Model;
 
-public interface BoardTile extends Tile {
+public interface BoardTile extends Tile{
     BoardTile EMPTY = new BoardTile() {
         @Override
         public boolean canStepOn() {
@@ -24,4 +24,5 @@ public interface BoardTile extends Tile {
             return false;
         }
     };
+
 }

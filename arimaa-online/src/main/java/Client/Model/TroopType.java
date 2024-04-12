@@ -22,4 +22,5 @@ public enum TroopType {
     public String getName() {
         return name;
     }
+
 }
