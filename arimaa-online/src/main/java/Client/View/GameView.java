@@ -8,9 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GameView extends JPanel implements Runnable{
-    public static final int WIDTH = 1100;
-    public static final int HEIGHT = 800;
-
+    private static JFrame window;
+    private static JPanel currentPanel;
     private GameController controller;
     final int FPS = 60;
     Thread gameThread;
@@ -21,17 +20,32 @@ public class GameView extends JPanel implements Runnable{
     }
 
     public void init() {
-        setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        setBackground(Color.ORANGE);
-        JFrame window = new JFrame("Text to be displayed on top");
+        window = new JFrame("Arimaa Game");
+        window.setLayout(new BorderLayout());
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.add(this);
-        window.pack();
         window.setResizable(false);
+
+//        RulesPanel rulesPanel = new RulesPanel();
+//        window.add(rulesPanel);
+//        currentPanel = rulesPanel;
+
+        WelcomePanel welcomePanel = new WelcomePanel();
+        window.add(welcomePanel,BorderLayout.CENTER);
+        currentPanel = welcomePanel;
+
+        window.setSize(900, 600);
         window.setLocationRelativeTo(null);
         window.setVisible(true);
 
-        this.launchGame();
+    }
+
+
+    public static void changeCurrentPanel(JPanel newPanel) {
+        window.remove(currentPanel);
+        window.add(newPanel);
+        currentPanel = newPanel;
+        window.revalidate();
+        window.repaint();
     }
 
     public void launchGame() {
@@ -67,11 +81,11 @@ public class GameView extends JPanel implements Runnable{
         //TODO
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D)g;
-        board.drawBoard(g2);
-    }
+//    @Override
+//    protected void paintComponent(Graphics g) {
+//        super.paintComponent(g);
+//        Graphics2D g2 = (Graphics2D)g;
+//        board.drawBoard(g2);
+//    }
 
 }
