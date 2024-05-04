@@ -1,4 +1,4 @@
 package Client.Model;
 
-public class delete {
+public class zalupa {
 }
