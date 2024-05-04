@@ -1,26 +1,30 @@
 package Client.Model;
 
 public enum TroopType {
-    ELEPHANT(2, "elephant"),
-    CAMEL(1, "camel"),
-    HORSE(2, "horse"),
-    DOG(2, "dog"),
+    ELEPHANT(6, "elephant"),
+    CAMEL(5, "camel"),
+    HORSE(4, "horse"),
+    DOG(3, "dog"),
     CAT(2, "cat"),
-    RABBIT(8, "rabbit");
+    RABBIT(1, "rabbit");
 
-    private final int total;
+    private final int strength;
     private final String name;
 
-    TroopType(int total, String name) {
-        this.total = total;
+    TroopType(int strength, String name) {
+        this.strength = strength;
         this.name = name;
     }
 
-    public int getTotal() {
-        return total;
+    public int getStrength() {
+        return strength;
     }
     public String getName() {
         return name;
+    }
+
+    public boolean isStrongerThan(TroopType troopType) {
+        return this.strength > troopType.strength;
     }
 
 }

@@ -1,9 +1,18 @@
 package Client.Model;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class Board {
-    private final int DIMENSION = 8;
+    public static final int DIMENSION = 8;
+    public static final int SQUARE_SIZE = 100;
+    public static final int HALF_SQUARE_SIZE = SQUARE_SIZE/2;
     private final BoardTile[][] board;
     private ArrayList<Troop> troopList;
 
@@ -18,6 +27,20 @@ public class Board {
 
     private void updateBoard(){
         //TODO
+    }
+
+    public void drawBoard(Graphics2D graphics2D) {
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(getClass().getResourceAsStream("/images/img.png"));
+        }catch(IOException e) {
+            e.printStackTrace();
+        }
+        for (int row = 0; row < DIMENSION; row++) {
+            for (int col = 0; col < DIMENSION; col++) {
+                graphics2D.drawImage(image, col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE, null);
+            }
+        }
     }
 
     private Board putTroop(Troop troop){
