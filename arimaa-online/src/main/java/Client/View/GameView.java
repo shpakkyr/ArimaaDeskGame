@@ -10,9 +10,6 @@ import java.awt.*;
 public class GameView extends JPanel implements Runnable{
     private static JFrame window;
     private static JPanel currentPanel;
-    public static final int WIDTH = 900;
-    public static final int HEIGHT = 600;
-
     private GameController controller;
     final int FPS = 60;
     Thread gameThread;
