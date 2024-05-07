@@ -1,18 +1,24 @@
 package Client.Model;
 
 public class Player {
-    private final int id;
+    private final int playerId;
     private final PlayingSide playingSide;
-    private String playerName;
+    private final String playerName;
+    private final boolean isComputer;
 
-    public Player(int id, PlayingSide playingSide, String playerName) {
-        this.id = id;
-        this.playingSide = playingSide;
+    public Player(int playerId, String playerName, boolean isComputer) {
+        this.playerId = playerId;
         this.playerName = playerName;
+        if(playerId == 0) {
+            this.playingSide = PlayingSide.GOLD;
+        } else {
+            this.playingSide = PlayingSide.SILVER;
+        }
+        this.isComputer = isComputer;
     }
 
-    public int getId() {
-        return id;
+    public int getPlayerId() {
+        return playerId;
     }
 
     public PlayingSide getPlayingSide() {
@@ -23,7 +29,7 @@ public class Player {
         return playerName;
     }
 
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
+    public boolean isComputer() {
+        return isComputer;
     }
 }

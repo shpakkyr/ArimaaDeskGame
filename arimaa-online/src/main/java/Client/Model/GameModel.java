@@ -3,27 +3,42 @@ package Client.Model;
 public class GameModel {
     private final Player player1;
     private final Player player2;
+    private Player currentPlayer;
+    private Player enemyPlayer;
+    private Player winner;
+    private int phase;
+    private int movesLeft;
+    private boolean isGameFinished;
     private Board board;
 
-    public GameModel(Player player1, Player player2, Board board) {
+    public GameModel(Player player1, Player player2) {
+        this.board = new Board();
         this.player1 = player1;
         this.player2 = player2;
-        this.board = board;
+        this.currentPlayer = player1;
+        this.enemyPlayer = player2;
+        this.phase = 1;
     }
 
-    private void update(){
-        //TODO
+    public void switchTurn(){
+        phase++;
+        Player newEnemyPlayer = currentPlayer;
+        currentPlayer = enemyPlayer;
+        enemyPlayer = newEnemyPlayer;
+        movesLeft = 4;
     }
 
-    private void startGame(){
-        //TODO
+    public void decrementMovesLeft(int number) {
+        movesLeft -= number;
     }
 
-    private void endGame(){
-        //TODO
-    }
+    public void checkWinner() {
+        boolean player1State = board.isWinner(player1, player2);
+        boolean player2State = board.isWinner(player1, player2);
 
-    private void switchTurn(){
-        //TODO
+        if (player1State || player2State) {
+            isGameFinished = true;
+            winner = player1State ? player1 : player2;
+        }
     }
 }
