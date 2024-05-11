@@ -42,6 +42,8 @@ public class RulesPanel extends JPanel {
             - Check if player B has no possible move (all pieces are frozen or have no place to move). If so player A wins.
             - Check if the only moves player B has are 3rd time repetitions. If so player A wins.
             
+            Icons by: Nathan Hwang and The Novice Oof
+            
             Devs: shpakkyr and vasiaboh
             """;
 
