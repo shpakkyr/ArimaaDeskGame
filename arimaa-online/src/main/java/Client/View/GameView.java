@@ -33,7 +33,7 @@ public class GameView extends JPanel implements Runnable{
         window.add(welcomePanel,BorderLayout.CENTER);
         currentPanel = welcomePanel;
 
-        window.setSize(1000, 650);
+        window.setSize(1050, 650);
         window.setLocationRelativeTo(null);
         window.setVisible(true);
 
