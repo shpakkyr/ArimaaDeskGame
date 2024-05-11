@@ -55,6 +55,20 @@ public class WelcomePanel extends JPanel {
             }
         });
 
+        PvCButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                GameView.changeCurrentPanel(new PvCChangePanel());
+            }
+        });
+
+        PvPButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                GameView.changeCurrentPanel(new PvPChangePanel());
+            }
+        });
+
     }
     private void setButtonSize(JButton button, Dimension size) {
         button.setPreferredSize(size);
