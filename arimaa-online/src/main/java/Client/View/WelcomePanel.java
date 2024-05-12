@@ -23,18 +23,18 @@ public class WelcomePanel extends JPanel {
         welcomeButtonMenu.setAlignmentX(Component.CENTER_ALIGNMENT);
         welcomeButtonMenu.setBorder(BorderFactory.createEmptyBorder(80, 10, 10, 10));
 
-        JButton PvCButton = createButton("Versus Computer");
-        JButton PvPButton = createButton("Local Multiplayer");
-        JButton onlineButton = createButton("Online Multiplayer");
-        JButton playHistoryButton = createButton("View Replays");
-        JButton rulesButton = createButton("Rules and Devs");
+        JButton PvCButton = CommonMethods.createButton("Versus Computer");
+        JButton PvPButton = CommonMethods.createButton("Local Multiplayer");
+        JButton onlineButton = CommonMethods.createButton("Online Multiplayer");
+        JButton playHistoryButton = CommonMethods.createButton("View Replays");
+        JButton rulesButton = CommonMethods.createButton("Rules and Devs");
 
         Dimension maxButtonSize = new Dimension(onlineButton.getMaximumSize().width+5, onlineButton.getMaximumSize().height);
-        setButtonSize(PvCButton, maxButtonSize);
-        setButtonSize(PvPButton, maxButtonSize);
-        setButtonSize(onlineButton, maxButtonSize);
-        setButtonSize(playHistoryButton, maxButtonSize);
-        setButtonSize(rulesButton, maxButtonSize);
+        CommonMethods.setButtonSize(PvCButton, maxButtonSize);
+        CommonMethods.setButtonSize(PvPButton, maxButtonSize);
+        CommonMethods.setButtonSize(onlineButton, maxButtonSize);
+        CommonMethods.setButtonSize(playHistoryButton, maxButtonSize);
+        CommonMethods.setButtonSize(rulesButton, maxButtonSize);
 
         welcomeButtonMenu.add(PvCButton);
         welcomeButtonMenu.add(Box.createRigidArea(new Dimension(0, 15)));
@@ -69,16 +69,5 @@ public class WelcomePanel extends JPanel {
             }
         });
 
-    }
-    private void setButtonSize(JButton button, Dimension size) {
-        button.setPreferredSize(size);
-        button.setMaximumSize(size);
-        button.setMinimumSize(size);
-    }
-
-    private JButton createButton(String text) {
-        JButton button = new JButton(text);
-        button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        return button;
     }
 }

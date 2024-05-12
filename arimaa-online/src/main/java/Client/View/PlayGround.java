@@ -1,5 +1,8 @@
 package Client.View;
 
+import Client.Model.Board;
+import Client.Model.Offset2D;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -48,8 +51,8 @@ public class PlayGround extends JPanel {
         private final JPanel[][] tiles;
 
         public GameBoardPanel() {
-            tiles = new JPanel[8][8];
-            setLayout(new GridLayout(8, 8));
+            tiles = new JPanel[Board.DIMENSION][Board.DIMENSION];
+            setLayout(new GridLayout(Board.DIMENSION, Board.DIMENSION));
             initializeBoard();
         }
 
@@ -66,14 +69,14 @@ public class PlayGround extends JPanel {
                 }
             };
 
-            for (int i = 0; i < 64; i++) {
+            for (int i = 0; i < Board.DIMENSION * Board.DIMENSION; i++) {
                 JPanel square = new JPanel(new BorderLayout());
                 square.setPreferredSize(new Dimension(tileSize, tileSize));
-                int row = i / 8;
-                int col = i % 8;
+                int row = i / Board.DIMENSION;
+                int col = i % Board.DIMENSION;
                 tiles[row][col] = square;
 
-                if((row == 5 && col == 2) || (row == 5 && col == 5) || (row == 2 && col == 2) || (row == 2 && col == 5)){
+                if(Offset2D.TRAP_OFFSET.contains(new Offset2D(row, col))){
                     square.setBackground(Color.BLACK);
                 }else {
                     square.setBackground(Color.DARK_GRAY);

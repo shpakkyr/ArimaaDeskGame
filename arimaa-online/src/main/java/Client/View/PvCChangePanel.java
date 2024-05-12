@@ -21,18 +21,18 @@ public class PvCChangePanel extends JPanel {
         PvCButtonMenu.setAlignmentX(Component.CENTER_ALIGNMENT);
         PvCButtonMenu.setBorder(BorderFactory.createEmptyBorder(80, 10, 10, 10));
 
-        JButton NGButton = createButton("New Game");
-        JButton S1Button = createButton("Load Save 1");
-        JButton S2Button = createButton("Load Save 2");
-        JButton S3Button = createButton("Load Save 3");
-        JButton ReturnButton = createButton("Return");
+        JButton NGButton = CommonMethods.createButton("New Game");
+        JButton S1Button = CommonMethods.createButton("Load Save 1");
+        JButton S2Button = CommonMethods.createButton("Load Save 2");
+        JButton S3Button = CommonMethods.createButton("Load Save 3");
+        JButton ReturnButton = CommonMethods.createButton("Return");
 
         Dimension maxButtonSize = new Dimension(S1Button.getMaximumSize().width+5, S1Button.getMaximumSize().height);
-        setButtonSize(NGButton, maxButtonSize);
-        setButtonSize(S1Button, maxButtonSize);
-        setButtonSize(S2Button, maxButtonSize);
-        setButtonSize(S3Button, maxButtonSize);
-        setButtonSize(ReturnButton, maxButtonSize);
+        CommonMethods.setButtonSize(NGButton, maxButtonSize);
+        CommonMethods.setButtonSize(S1Button, maxButtonSize);
+        CommonMethods.setButtonSize(S2Button, maxButtonSize);
+        CommonMethods.setButtonSize(S3Button, maxButtonSize);
+        CommonMethods.setButtonSize(ReturnButton, maxButtonSize);
 
         PvCButtonMenu.add(NGButton);
         PvCButtonMenu.add(Box.createRigidArea(new Dimension(0, 15)));
@@ -59,16 +59,4 @@ public class PvCChangePanel extends JPanel {
             }
         });
     }
-
-    private void setButtonSize(JButton button, Dimension size) {
-        button.setPreferredSize(size);
-        button.setMaximumSize(size);
-        button.setMinimumSize(size);
-    }
-    private JButton createButton(String text) {
-        JButton button = new JButton(text);
-        button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        return button;
-    }
-
 }
