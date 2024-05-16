@@ -31,13 +31,13 @@ public class GameControllerPanel extends JPanel implements GameListener {
         setLayout(new BorderLayout());
         setBorder(new EmptyBorder(0, 0, 0, 0));
 
-        JLabel playerTopName = createColoredLabel("Player 2 BLUE (" + game.getPlayer2().getPlayerName() + ")", Color.CYAN, 14, false);
+        JLabel playerTopName = createColoredLabel("Silver Player (" + game.getPlayer2().getPlayerName() + ")", Color.LIGHT_GRAY, 14, false);
         JPanel player2infoGroup = createGroupPanel(Color.BLACK);
         player2infoGroup.add(Box.createRigidArea(new Dimension(0, 7)));
         player2infoGroup.add(playerTopName);
         player2infoGroup.add(Box.createRigidArea(new Dimension(0, 5)));
 
-        turnIndicator = new JLabel("Player 1's Turn");
+        turnIndicator = new JLabel("Gold Player's Turn");
         turnIndicator.setForeground(Color.BLACK);
         movesLeftLabel = new JLabel("Arrange your pieces");
 
@@ -110,7 +110,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
         gameControllerPanel.add(saveButton);
         gameControllerPanel.add(Box.createVerticalGlue());
 
-        JLabel playerBottomName = createColoredLabel("Player 1 YELLOW (" + game.getPlayer1().getPlayerName() + ")", Color.YELLOW, 14, false);
+        JLabel playerBottomName = createColoredLabel("Gold Player (" + game.getPlayer1().getPlayerName() + ")", Color.ORANGE, 14, false);
         JPanel player1infoGroup = createGroupPanel(Color.BLACK);
         player1infoGroup.add(playerBottomName);
         player1infoGroup.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -200,11 +200,11 @@ public class GameControllerPanel extends JPanel implements GameListener {
     private void setTurnFormatting(){
         Color turnColor;
         if (game.getPhase() % 2 == 1){
-            turnColor = Color.YELLOW;
-            turnIndicator.setText("Player 1's Turn");
+            turnColor = Color.ORANGE;
+            turnIndicator.setText("Gold Player's Turn");
         } else {
-            turnColor = Color.CYAN;
-            turnIndicator.setText("Player 2's Turn");
+            turnColor = Color.LIGHT_GRAY;
+            turnIndicator.setText("Silver Player's Turn");
         }
         gameControllerPanel.setBackground(turnColor);
         if (game.getPhase() <= 2){

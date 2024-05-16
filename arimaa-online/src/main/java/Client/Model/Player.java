@@ -50,7 +50,6 @@ public class Player {
         Player other = (Player) obj;
         return playerId == other.playerId &&
                 isComputer == other.isComputer &&
-                Objects.equals(playerName, other.playerName) &&
                 playingSide == other.playingSide;
     }
 }

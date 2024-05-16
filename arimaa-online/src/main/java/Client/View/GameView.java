@@ -64,7 +64,7 @@ public class GameView extends JPanel implements Runnable{
         newGameDialog.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
-        JLabel player1Label = new JLabel("Player 1 (Yellow):");
+        JLabel player1Label = new JLabel("Gold Player:");
         JTextField player1TextField = new JTextField(20);
         player1TextField.setDocument(new javax.swing.text.PlainDocument() {
             public void insertString(int offs, String str, javax.swing.text.AttributeSet a) throws javax.swing.text.BadLocationException {
@@ -74,7 +74,7 @@ public class GameView extends JPanel implements Runnable{
             }
         });
 
-        JLabel player2Label = new JLabel("Player 2 (Blue):");
+        JLabel player2Label = new JLabel("Silver Player:");
         JTextField player2TextField = new JTextField(20);
         player1TextField.setDocument(new javax.swing.text.PlainDocument() {
             public void insertString(int offs, String str, javax.swing.text.AttributeSet a) throws javax.swing.text.BadLocationException {
