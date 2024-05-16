@@ -2,31 +2,26 @@ package Client.Model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Troop {
     private final TroopType type;
-    private final Player player;
 
-    public Troop(TroopType type, Player player) {
+
+    public Troop(TroopType type) {
         this.type = type;
-        this.player = player;
     }
 
     public TroopType getType() {
         return type;
     }
 
-    public Player getPlayer() {
-        return player;
+    public static Troop createPieceFromNotationPlayerWithSpecificPlayer(String pieceTypeString, Player player) {
+        if (Objects.equals(pieceTypeString, "")) {
+            return null;
+        }
+        TroopType pieceType = TroopType.fromNotation(pieceTypeString.toLowerCase().charAt(0));
+        return new Troop(pieceType);
     }
 
-    public ArrayList<Directions> troopValidDirections() {
-        ArrayList<Directions> troopDirections =  new ArrayList<>(List.of(Directions.NORTH, Directions.SOUTH, Directions.LEFT, Directions.RIGHT));
-        if(player.getPlayingSide() == PlayingSide.GOLD) {
-            troopDirections.remove(Directions.SOUTH);
-        } else {
-            troopDirections.remove(Directions.NORTH);
-        }
-        return troopDirections;
-    }
 }

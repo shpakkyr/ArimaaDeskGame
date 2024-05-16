@@ -1,10 +1,14 @@
 package Client.View;
 
+import Client.Model.GameModel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
 public class RulesPanel extends JPanel {
+    private GameModel game;
+    private GameView view;
     private final static String RULES = """
             # Object of the Game
             Be the first to get one of your rabbits to the other side of the board.
@@ -47,7 +51,9 @@ public class RulesPanel extends JPanel {
             Devs: shpakkyr and vasiaboh
             """;
 
-    public RulesPanel() {
+    public RulesPanel(GameModel game, GameView view) {
+        this.view = view;
+        this.game = game;
         setLayout(new BorderLayout());
 
         JLabel rulesLabel = new JLabel("Rules and Devs", SwingConstants.CENTER);
@@ -70,7 +76,7 @@ public class RulesPanel extends JPanel {
         returnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GameView.changeCurrentPanel(new WelcomePanel());
+                GameView.changeCurrentPanel(new WelcomePanel(game, view));
             }
         });
     }

@@ -1,5 +1,7 @@
 package Client.Model;
 
+import java.util.Objects;
+
 public class Player {
     private final int playerId;
     private final PlayingSide playingSide;
@@ -9,7 +11,7 @@ public class Player {
     public Player(int playerId, String playerName, boolean isComputer) {
         this.playerId = playerId;
         this.playerName = playerName;
-        if(playerId == 0) {
+        if(playerId == 1) {
             this.playingSide = PlayingSide.GOLD;
         } else {
             this.playingSide = PlayingSide.SILVER;
@@ -25,11 +27,30 @@ public class Player {
         return playingSide;
     }
 
+    public String getPlayingSideString() {
+        return playingSide.getPlayingSide();
+    }
+
     public String getPlayerName() {
         return playerName;
     }
 
     public boolean isComputer() {
         return isComputer;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Player other = (Player) obj;
+        return playerId == other.playerId &&
+                isComputer == other.isComputer &&
+                Objects.equals(playerName, other.playerName) &&
+                playingSide == other.playingSide;
     }
 }

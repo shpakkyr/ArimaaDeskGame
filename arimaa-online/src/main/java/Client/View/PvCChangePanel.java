@@ -1,12 +1,18 @@
 package Client.View;
 
+import Client.Model.GameModel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class PvCChangePanel extends JPanel {
-    public PvCChangePanel(){
+    private GameModel game;
+    private GameView view;
+    public PvCChangePanel(GameModel game, GameView view){
+        this.view = view;
+        this.game = game;
         setLayout(new BorderLayout());
 
         JLabel welcomeLabel = new JLabel("Versus Computer");
@@ -49,13 +55,13 @@ public class PvCChangePanel extends JPanel {
         ReturnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GameView.changeCurrentPanel(new WelcomePanel());
+                GameView.changeCurrentPanel(new WelcomePanel(game, view));
             }
         });
         NGButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GameView.changeCurrentPanel(new PlayGround());
+                GameView.changeCurrentPanel(view.getBoardPanel());
             }
         });
     }
