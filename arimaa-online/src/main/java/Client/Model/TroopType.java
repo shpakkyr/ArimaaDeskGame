@@ -1,5 +1,7 @@
 package Client.Model;
 
+import java.util.concurrent.ConcurrentMap;
+
 public enum TroopType {
     ELEPHANT(6, "elephant"),
     CAMEL(5, "camel"),
@@ -25,6 +27,18 @@ public enum TroopType {
 
     public boolean isStrongerThan(TroopType troopType) {
         return this.strength > troopType.strength;
+    }
+
+    public static TroopType fromNotation(char notation) {
+        return switch (notation) {
+            case 'e' -> ELEPHANT;
+            case 'm' -> CAMEL;
+            case 'h' -> HORSE;
+            case 'd' -> DOG;
+            case 'c' -> CAT;
+            case 'r' -> RABBIT;
+            default -> null;
+        };
     }
 
 }

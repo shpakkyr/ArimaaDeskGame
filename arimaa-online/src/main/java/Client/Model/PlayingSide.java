@@ -13,4 +13,5 @@ public enum PlayingSide {
     public String getPlayingSide() {
         return playingSide;
     }
+
 }

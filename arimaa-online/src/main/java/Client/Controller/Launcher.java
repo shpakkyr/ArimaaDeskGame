@@ -1,16 +1,22 @@
 package Client.Controller;
 
-import Client.Model.Board;
 import Client.Model.GameModel;
 import Client.Model.Player;
-import Client.Model.PlayingSide;
 import Client.View.GameView;
 
+import javax.swing.*;
+
 public class Launcher {
+    private static JFrame frame;
+    private static JPanel currentRightPanel;
+
     public static void main(String[] args) {
-        GameModel gameModel = new GameModel(new Player(1, "Kyrylo", false), new Player(0, "Bogdan", false));
-        GameController gameController = new GameController(gameModel);
-        GameView gameView = new GameView(gameController);
-        gameView.init();
+        SwingUtilities.invokeLater(() -> {
+            frame = new JFrame("Arimaa");
+            GameModel game = new GameModel(new Player(1, "", false), new Player(2, "", false));
+            GameView view = new GameView(game);
+            view.init();
+        });
+
     }
 }

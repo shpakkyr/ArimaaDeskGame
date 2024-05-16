@@ -1,13 +1,17 @@
 package Client.View;
 
+import Client.Model.GameModel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class WelcomePanel extends JPanel {
-
-    public WelcomePanel() {
+    private GameModel game;
+    private GameView view;
+    public WelcomePanel(GameModel game, GameView view) {
+        this.game = game;
         setLayout(new BorderLayout());
 
         JLabel welcomeLabel = new JLabel("Arimaa");
@@ -51,21 +55,21 @@ public class WelcomePanel extends JPanel {
         rulesButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GameView.changeCurrentPanel(new RulesPanel());
+                GameView.changeCurrentPanel(new RulesPanel(game, view));
             }
         });
 
         PvCButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GameView.changeCurrentPanel(new PvCChangePanel());
+                GameView.changeCurrentPanel(new PvCChangePanel(game, view));
             }
         });
 
         PvPButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GameView.changeCurrentPanel(new PvPChangePanel());
+                GameView.changeCurrentPanel(new PvPChangePanel(game, view));
             }
         });
 

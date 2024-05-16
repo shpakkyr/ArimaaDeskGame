@@ -9,23 +9,23 @@ public enum Directions {
     LEFT(0, -1),
     RIGHT(0, 1);
 
-    private final int raw;
+    private final int row;
     private final int column;
 
-    Directions(int raw, int column) {
-        this.raw = raw;
+    Directions(int row, int column) {
+        this.row = row;
         this.column = column;
     }
 
-    public int getRaw() {
-        return raw;
+    public int getRow() {
+        return row;
     }
 
     public int getColumn() {
         return column;
     }
 
-    public ArrayList<Directions> get4Directions() {
+    public static ArrayList<Directions> get4Directions() {
         return new ArrayList<Directions>(List.of(NORTH, SOUTH, LEFT, RIGHT));
     }
 }
