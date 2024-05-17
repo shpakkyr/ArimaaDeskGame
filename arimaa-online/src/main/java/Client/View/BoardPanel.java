@@ -225,7 +225,7 @@ public class BoardPanel extends JPanel {
 
     private boolean clickedOnWrongSquare(JPanel square) {
         Color color = square.getBackground();
-        return color == Color.LIGHT_GRAY || color == Color.DARK_GRAY || color == currentMode.getColor();
+        return color == Color.BLACK || color == Color.DARK_GRAY || color == currentMode.getColor();
     }
 
     private void handleSwitchMode(Offset2D squarePosition, ArrayList<Offset2D> selectedPositions) {
