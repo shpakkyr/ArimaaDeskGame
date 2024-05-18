@@ -1,14 +1,12 @@
 package Client.View;
 
-import Client.Controller.GameController;
-import Client.Model.Board;
-import Client.Model.GameModel;
-import Client.Model.Player;
+import Client.Controller.Loader;
+import Client.Model.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
+import java.io.*;
 
 public class GameView extends JPanel implements Runnable{
     private static JFrame window;
@@ -56,6 +54,43 @@ public class GameView extends JPanel implements Runnable{
         game.setGameListener(controlPanel);
         currentRightPanel = controlPanel;
         changeRightPanel(currentRightPanel);
+    }
+    public void continueGame(GameState gameState) {
+        Player player1 = new Player(1, gameState.player1.getPlayerName(), false);
+        Player player2 = new Player(2, gameState.player1.getPlayerName(), false);
+        game.setPlayers(player1, player2);
+        game.getBoard().populateBoardFrom2DString(gameState.boardState, player1, player2);
+        boardPanel = new BoardPanel(game);
+        boardPanel.setGame(game);
+        changeCurrentPanel(boardPanel);
+        controlPanel = new GameControllerPanel(game, boardPanel);
+        game.setGameListener(controlPanel);
+        currentRightPanel = controlPanel;
+        changeRightPanel(currentRightPanel);
+        controlPanel.startTimerWithRemainingTime(gameState.remainingTime);
+
+    }
+
+    public void loadSave() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Load Game State");
+        int userSelection = fileChooser.showOpenDialog(null);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToLoad = fileChooser.getSelectedFile();
+            GameState gameState = Loader.loadGame(fileToLoad);
+
+            if (gameState != null && !gameState.isGameFinished) {
+                game.loadState(gameState);
+                continueGame(gameState);
+            }else{
+                JOptionPane.showMessageDialog(
+                        null,
+                        "The save file is corrupted or the game is only available for replay.",
+                        "Load Game",
+                        JOptionPane.WARNING_MESSAGE
+                );
+            }
+        }
     }
 
     public void showNewGameDialog(JFrame parentFrame, boolean vsComputer) {

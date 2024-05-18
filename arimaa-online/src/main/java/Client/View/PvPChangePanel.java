@@ -56,5 +56,12 @@ public class PvPChangePanel extends JPanel {
                 view.showNewGameDialog(GameView.getWindow(), false);
             }
         });
+        SButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                view.loadSave();
+            }
+        });
+
     }
 }

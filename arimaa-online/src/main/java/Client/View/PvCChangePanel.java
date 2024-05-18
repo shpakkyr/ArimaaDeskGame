@@ -53,7 +53,7 @@ public class PvCChangePanel extends JPanel {
         NGButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GameView.changeCurrentPanel(view.getBoardPanel());
+                view.showNewGameDialog(GameView.getWindow(), true);
             }
         });
     }

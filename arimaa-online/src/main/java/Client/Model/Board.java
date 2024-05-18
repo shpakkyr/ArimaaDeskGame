@@ -5,17 +5,16 @@ import jdk.jfr.BooleanFlag;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Objects;
 
 import static Client.Model.TroopType.RABBIT;
+import static Client.Model.TroopType.toNotation;
 
-public class Board {
+public class Board implements Serializable {
     public static final int DIMENSION = 8;
     public static final int SQUARE_SIZE = 100;
     public static final int HALF_SQUARE_SIZE = SQUARE_SIZE/2;
@@ -29,7 +28,30 @@ public class Board {
     public void placeTroop(Troop troop, Offset2D offset2d){
         board[offset2d.getRow()][offset2d.getColumn()] = new Tile(troop);
     }
-
+    public String[][] copyBoard() {
+        String[][] copy = new String[8][8];
+        for(int j = 0; j < 8; j++) {
+            for (int i = 0; i < 8; i++) {
+                if(this.board[j][i].getTroop() == null){
+                    copy[j][i] = "";
+                }else {
+                    String playerCheck = TroopType.toNotation(this.board[j][i].getTroop().getType());
+                    if(this.board[j][i].getPlayer().getPlayerId() == 1){
+                        copy[j][i] = playerCheck.toUpperCase();
+                    }else{
+                        copy[j][i] = playerCheck;
+                    }
+                }
+            }
+        }
+//        for(int j = 0; j < 8; j++) {
+//            for (int i = 0; i < 8; i++) {
+//                System.out.print(copy[j][i] + " ");
+//            }
+//            System.out.print("\n");
+//        }
+        return copy;
+    }
     public void placePlayerOnTile(Player player, Offset2D offset2D) {
         getTileAt(offset2D).setPlayer(player);
     }

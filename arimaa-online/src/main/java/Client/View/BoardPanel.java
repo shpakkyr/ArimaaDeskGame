@@ -5,14 +5,10 @@ import Client.Model.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Random;
+import java.io.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static Client.View.GameMode.STEP;

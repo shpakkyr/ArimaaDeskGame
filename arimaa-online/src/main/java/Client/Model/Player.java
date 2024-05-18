@@ -1,8 +1,9 @@
 package Client.Model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Player {
+public class Player implements Serializable {
     private final int playerId;
     private final PlayingSide playingSide;
     private final String playerName;

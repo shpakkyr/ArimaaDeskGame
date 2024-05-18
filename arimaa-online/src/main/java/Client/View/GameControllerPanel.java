@@ -1,14 +1,13 @@
 package Client.View;
 
-import Client.Model.Board;
-import Client.Model.GameListener;
-import Client.Model.GameModel;
-import Client.Model.Player;
+import Client.Controller.*;
+import Client.Model.*;
 import Client.View.CountdownTimer;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.io.File;
 import java.util.Date;
 
 public class GameControllerPanel extends JPanel implements GameListener {
@@ -23,7 +22,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
     private final JButton giveUpButton;
     private final JButton saveButton;
     private final BoardPanel boardPanel;
-    private final GameModel game;
+    private GameModel game;
     private final JPanel gameControllerPanel;
 
     private CountdownTimer timer;
@@ -164,9 +163,31 @@ public class GameControllerPanel extends JPanel implements GameListener {
             game.endGameGiveUp();
             onGameEnded(game.getWinner());
         });
-        saveButton.addActionListener(e -> {
+        saveButton.addActionListener(e -> saveGame());
+    }
 
-        });
+    public void saveGame() {
+        timer.pauseTimer();
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save Game State");
+
+        int userSelection = fileChooser.showSaveDialog(this);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            GameState gameState = game.saveState(timer.getRemainingTime());
+            Saver.saveGame(gameState, fileToSave);
+        }
+
+        startTimerWithRemainingTime(timer.getRemainingTime());
+    }
+
+    public void startTimerWithRemainingTime(long remainingTime) {
+        timer = new CountdownTimer((int) (remainingTime / 1000 / 60));
+        timer.setRemainingTime(remainingTime);
+        timer.setOnTimerEnd(this::onTimerEnd);
+        timer.setOnTick(() -> SwingUtilities.invokeLater(() -> timerLabel.setText(timer.getTimeString())));
+        timer.start();
     }
 
     private void onTimerEnd(){

@@ -47,48 +47,50 @@ public class CountdownTimer extends Thread{
 
 
     public synchronized void pauseTimer() {
-        if (!paused) {
-            pauseTime = System.currentTimeMillis();
             paused = true;
-        }
-    }
-
-    public synchronized void resumeTimer() {
-        if (paused) {
-            long timeSpentPaused = System.currentTimeMillis() - pauseTime;
-            remainingTime -= timeSpentPaused;
-            paused = false;
-        }
+            logger.info("Time spent before save: " + formatTime((long)ceil(totalTimeSpent)));
     }
 
     @Override
     public void run() {
         long lastTime = System.currentTimeMillis();
         while (running && remainingTime > 0) {
-            long currentTime = System.currentTimeMillis();
-            long elapsedTime = currentTime - lastTime;
-            remainingTime -= elapsedTime;
-            totalTimeSpent += elapsedTime;
-            lastTime = currentTime;
+            if(!paused) {
+                long currentTime = System.currentTimeMillis();
+                long elapsedTime = currentTime - lastTime;
+                remainingTime -= elapsedTime;
+                totalTimeSpent += elapsedTime;
+                lastTime = currentTime;
 
-            timeString = formatTime(remainingTime);
+                timeString = formatTime(remainingTime);
 
-            if (onTick != null) {
-                onTick.run();
-            }
-
-            if (remainingTime <= 0) {
-                timeString = "00:00";
-                if (onTimerEnd != null) {
-                    onTimerEnd.run();
+                if (onTick != null) {
+                    onTick.run();
                 }
-            }
 
-            try {
-                Thread.sleep(Math.max(0, 997 - (System.currentTimeMillis() - currentTime)));
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+                if (remainingTime <= 0) {
+                    timeString = "00:00";
+                    if (onTimerEnd != null) {
+                        onTimerEnd.run();
+                    }
+                }
+
+                try {
+                    Thread.sleep(Math.max(0, 997 - (System.currentTimeMillis() - currentTime)));
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }else{
+                lastTime = System.currentTimeMillis();
             }
         }
+    }
+    public long getRemainingTime() {
+        return remainingTime;
+    }
+
+    public void setRemainingTime(long remainingTime) {
+        this.remainingTime = remainingTime;
+        this.timeString = formatTime(remainingTime);
     }
 }

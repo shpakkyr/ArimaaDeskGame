@@ -1,7 +1,5 @@
 package Client.Model;
 
-import java.util.concurrent.ConcurrentMap;
-
 public enum TroopType {
     ELEPHANT(6, "elephant"),
     CAMEL(5, "camel"),
@@ -38,6 +36,17 @@ public enum TroopType {
             case 'c' -> CAT;
             case 'r' -> RABBIT;
             default -> null;
+        };
+    }
+
+    public static String toNotation(TroopType troop) {
+        return switch (troop) {
+            case ELEPHANT -> "e";
+            case CAMEL -> "m";
+            case HORSE -> "h";
+            case DOG -> "d";
+            case CAT -> "c";
+            case RABBIT -> "r";
         };
     }
 

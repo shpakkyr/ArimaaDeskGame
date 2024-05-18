@@ -34,7 +34,7 @@ public class GameModel {
         isGameFinished = false;
     }
 
-    public void switchTurn(){
+    public void switchTurn() {
         Player newEnemyPlayer = currentPlayer;
         currentPlayer = enemyPlayer;
         enemyPlayer = newEnemyPlayer;
@@ -114,13 +114,27 @@ public class GameModel {
         this.gameListener = gameListener;
     }
 
-    public void checkWinning(){
+    public void checkWinning() {
         boolean player1won = board.isWinner(player1, player2);
         boolean player2won = board.isWinner(player2, player1);
-        if (player1won || player2won){
+        if (player1won || player2won) {
             winner = player1won ? player1 : player2;
             isGameFinished = true;
             gameListener.onGameEnded(winner);
         }
+    }
+    public GameState saveState(long remainingTime) {
+        return new GameState(player1, player2, currentPlayer, enemyPlayer, winner, phase, movesLeft, isGameFinished, board.copyBoard(), remainingTime);
+    }
+
+    public void loadState(GameState gameState) {
+        this.player1 = gameState.player1;
+        this.player2 = gameState.player2;
+        this.currentPlayer = gameState.currentPlayer;
+        this.enemyPlayer = gameState.enemyPlayer;
+        this.winner = gameState.winner;
+        this.phase = gameState.phase;
+        this.movesLeft = gameState.movesLeft;
+        this.isGameFinished = gameState.isGameFinished;
     }
 }
