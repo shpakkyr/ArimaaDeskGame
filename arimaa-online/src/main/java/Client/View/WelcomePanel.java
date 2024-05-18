@@ -30,7 +30,7 @@ public class WelcomePanel extends JPanel {
         JButton PvCButton = CommonMethods.createButton("Versus Computer");
         JButton PvPButton = CommonMethods.createButton("Local Multiplayer");
         JButton onlineButton = CommonMethods.createButton("Online Multiplayer");
-        JButton playHistoryButton = CommonMethods.createButton("View Replays");
+        JButton playHistoryButton = CommonMethods.createButton("View Replay");
         JButton rulesButton = CommonMethods.createButton("Rules and Devs");
 
         Dimension maxButtonSize = new Dimension(onlineButton.getMaximumSize().width+5, onlineButton.getMaximumSize().height);

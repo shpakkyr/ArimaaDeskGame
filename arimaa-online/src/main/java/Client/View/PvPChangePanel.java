@@ -28,25 +28,17 @@ public class PvPChangePanel extends JPanel {
         PvPButtonMenu.setBorder(BorderFactory.createEmptyBorder(80, 10, 10, 10));
 
         JButton NGButton = CommonMethods.createButton("New Game");
-        JButton S1Button = CommonMethods.createButton("Load Save 1");
-        JButton S2Button = CommonMethods.createButton("Load Save 2");
-        JButton S3Button = CommonMethods.createButton("Load Save 3");
+        JButton SButton = CommonMethods.createButton("Load Save");
         JButton ReturnButton = CommonMethods.createButton("Return");
 
-        Dimension maxButtonSize = new Dimension(S1Button.getMaximumSize().width+5, S1Button.getMaximumSize().height);
+        Dimension maxButtonSize = new Dimension(SButton.getMaximumSize().width+5, SButton.getMaximumSize().height);
         CommonMethods.setButtonSize(NGButton, maxButtonSize);
-        CommonMethods.setButtonSize(S1Button, maxButtonSize);
-        CommonMethods.setButtonSize(S2Button, maxButtonSize);
-        CommonMethods.setButtonSize(S3Button, maxButtonSize);
+        CommonMethods.setButtonSize(SButton, maxButtonSize);
         CommonMethods.setButtonSize(ReturnButton, maxButtonSize);
 
         PvPButtonMenu.add(NGButton);
         PvPButtonMenu.add(Box.createRigidArea(new Dimension(0, 15)));
-        PvPButtonMenu.add(S1Button);
-        PvPButtonMenu.add(Box.createRigidArea(new Dimension(0, 15)));
-        PvPButtonMenu.add(S2Button);
-        PvPButtonMenu.add(Box.createRigidArea(new Dimension(0, 15)));
-        PvPButtonMenu.add(S3Button);
+        PvPButtonMenu.add(SButton);
         PvPButtonMenu.add(Box.createRigidArea(new Dimension(0, 15)));
         PvPButtonMenu.add(ReturnButton);
 
