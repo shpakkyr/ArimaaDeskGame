@@ -4,6 +4,7 @@ import Client.Model.Board;
 import Client.Model.GameListener;
 import Client.Model.GameModel;
 import Client.Model.Player;
+import Client.View.CountdownTimer;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -25,6 +26,8 @@ public class GameControllerPanel extends JPanel implements GameListener {
     private final GameModel game;
     private final JPanel gameControllerPanel;
 
+    private CountdownTimer timer;
+    private final JLabel timerLabel;
     public GameControllerPanel(GameModel game, BoardPanel boardPanel) {
         this.game = game;
         this.boardPanel = boardPanel;
@@ -39,6 +42,9 @@ public class GameControllerPanel extends JPanel implements GameListener {
 
         turnIndicator = new JLabel("Gold Player's Turn");
         turnIndicator.setForeground(Color.BLACK);
+
+        timerLabel = createColoredLabel("10:00", Color.BLACK, 14, true);
+
         movesLeftLabel = new JLabel("Arrange your pieces");
 
         switchButton = new JRadioButton(GameMode.SWITCH.getModeName());
@@ -97,6 +103,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
         gameControllerPanel.setLayout(new BoxLayout(gameControllerPanel, BoxLayout.Y_AXIS));
         gameControllerPanel.add(Box.createVerticalGlue());
         gameControllerPanel.add(turnIndicator);
+        gameControllerPanel.add(timerLabel);
         gameControllerPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         gameControllerPanel.add(movesLeftLabel);
         gameControllerPanel.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -157,6 +164,27 @@ public class GameControllerPanel extends JPanel implements GameListener {
             game.endGameGiveUp();
             onGameEnded(game.getWinner());
         });
+        saveButton.addActionListener(e -> {
+
+        });
+    }
+
+    private void onTimerEnd(){
+        boardPanel.resetSquaresColors();
+        boardPanel.setGameMode(GameMode.NONE);
+        boardPanel.handleModeReset();
+        game.incrementPhase();
+        setTurnFormatting();
+    }
+
+    private void startTimer(int minutes) {
+        if (timer != null) {
+            timer.stopAndLogTime();
+        }
+        timer = new CountdownTimer(minutes); // Convert minutes to seconds
+        timer.setOnTimerEnd(this::onTimerEnd);
+        timer.setOnTick(() -> SwingUtilities.invokeLater(() -> timerLabel.setText(timer.getTimeString())));
+        timer.start();
     }
 
     @Override
@@ -184,6 +212,8 @@ public class GameControllerPanel extends JPanel implements GameListener {
 
     @Override
     public void onGameEnded(Player winner) {
+        timer.stopAndLogTime();
+        timerLabel.setVisible(false);
         boardPanel.setGameMode(GameMode.NONE);
         boardPanel.handleModeReset();
         noneButton.setVisible(false);
@@ -206,6 +236,9 @@ public class GameControllerPanel extends JPanel implements GameListener {
             turnColor = Color.LIGHT_GRAY;
             turnIndicator.setText("Silver Player's Turn");
         }
+
+        startTimer(7);
+
         gameControllerPanel.setBackground(turnColor);
         if (game.getPhase() <= 2){
             movesLeftLabel.setText("Arrange your pieces");
