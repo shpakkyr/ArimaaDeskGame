@@ -24,7 +24,7 @@ public class CountdownTimer extends Thread{
         this.timeString = formatTime(remainingTime);
     }
 
-    private String formatTime(long time) {
+    public String formatTime(long time) {
         long seconds = (time / 1000) % 60;
         long minutes = (time / (1000 * 60)) % 60;
         return String.format("%02d:%02d", minutes, seconds);

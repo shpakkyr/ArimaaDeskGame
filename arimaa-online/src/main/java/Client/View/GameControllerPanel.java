@@ -2,13 +2,12 @@ package Client.View;
 
 import Client.Controller.*;
 import Client.Model.*;
-import Client.View.CountdownTimer;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
-import java.util.Date;
+import java.util.ArrayList;
 
 public class GameControllerPanel extends JPanel implements GameListener {
     private final JLabel turnIndicator;
@@ -21,13 +20,15 @@ public class GameControllerPanel extends JPanel implements GameListener {
     private final JButton finishButton;
     private final JButton giveUpButton;
     private final JButton saveButton;
+    private final JButton returnButton;
     private final BoardPanel boardPanel;
     private GameModel game;
+    private ArrayList<GameState> gameState = new ArrayList<GameState>();
     private final JPanel gameControllerPanel;
-
+    private int firstTurnCheck = 0;
     private CountdownTimer timer;
     private final JLabel timerLabel;
-    public GameControllerPanel(GameModel game, BoardPanel boardPanel) {
+    public GameControllerPanel(GameModel game, BoardPanel boardPanel, GameView view) {
         this.game = game;
         this.boardPanel = boardPanel;
         setLayout(new BorderLayout());
@@ -95,8 +96,10 @@ public class GameControllerPanel extends JPanel implements GameListener {
         finishButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, finishButton.getMinimumSize().height));
         giveUpButton = new JButton("Give Up");
         giveUpButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, giveUpButton.getMinimumSize().height));
-        saveButton = new JButton("Save Game State");
+        saveButton = new JButton("Save Game");
         saveButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, saveButton.getMinimumSize().height));
+        returnButton = new JButton("Main menu");
+        returnButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, returnButton.getMinimumSize().height));
 
         gameControllerPanel = createGroupPanel(Color.WHITE);
         gameControllerPanel.setLayout(new BoxLayout(gameControllerPanel, BoxLayout.Y_AXIS));
@@ -114,7 +117,11 @@ public class GameControllerPanel extends JPanel implements GameListener {
         gameControllerPanel.add(giveUpButton);
         gameControllerPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         gameControllerPanel.add(saveButton);
+        gameControllerPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        gameControllerPanel.add(returnButton);
         gameControllerPanel.add(Box.createVerticalGlue());
+
+        returnButton.setVisible(false);
 
         JLabel playerBottomName = createColoredLabel("Gold Player (" + game.getPlayer1().getPlayerName() + ")", Color.ORANGE, 14, false);
         JPanel player1infoGroup = createGroupPanel(Color.BLACK);
@@ -132,12 +139,16 @@ public class GameControllerPanel extends JPanel implements GameListener {
         }
 
         finishButton.addActionListener(e -> {
+            firstTurnCheck++;
+            if(firstTurnCheck > 1 && game.getMovesLeft() == 4) {
+                boardSnap();
+            }
+
             boardPanel.resetSquaresColors();
             boardPanel.setGameMode(GameMode.NONE);
             boardPanel.handleModeReset();
             game.incrementPhase();
             setTurnFormatting();
-
         });
         switchButton.addActionListener(e -> {
             boardPanel.setGameMode(GameMode.SWITCH);
@@ -161,8 +172,11 @@ public class GameControllerPanel extends JPanel implements GameListener {
         });
         giveUpButton.addActionListener(e -> {
             game.endGameGiveUp();
-            onGameEnded(game.getWinner());
         });
+//        returnButton.addActionListener(e -> {
+//            view.clearPanels();
+//            view.init();
+//        });
         saveButton.addActionListener(e -> saveGame());
     }
 
@@ -175,11 +189,25 @@ public class GameControllerPanel extends JPanel implements GameListener {
         int userSelection = fileChooser.showSaveDialog(this);
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             File fileToSave = fileChooser.getSelectedFile();
-            GameState gameState = game.saveState(timer.getRemainingTime());
             Saver.saveGame(gameState, fileToSave);
         }
 
         startTimerWithRemainingTime(timer.getRemainingTime());
+    }
+
+    public void loadSnapInfo(ArrayList<GameState> loadState){
+        gameState = (ArrayList<GameState>) loadState.clone();
+    }
+
+    public void boardSnap(){
+        gameState.add(game.saveState(timer.getRemainingTime()));
+
+        for(int j = 0; j < 8; j++) {
+            for (int i = 0; i < 8; i++) {
+                System.out.print( gameState.getLast().boardState[j][i] + " ");
+            }
+            System.out.print("\n");
+        }
     }
 
     public void startTimerWithRemainingTime(long remainingTime) {
@@ -191,6 +219,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
     }
 
     private void onTimerEnd(){
+        boardSnap();
         boardPanel.resetSquaresColors();
         boardPanel.setGameMode(GameMode.NONE);
         boardPanel.handleModeReset();
@@ -210,6 +239,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
 
     @Override
     public void onMovesLeftChanged(int movesLeft) {
+        boardSnap();
         if(movesLeft > 0){
             if (movesLeft < 2){
                 if (pushButton.isSelected() || pullButton.isSelected()){
@@ -233,6 +263,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
 
     @Override
     public void onGameEnded(Player winner) {
+        boardSnap();
         timer.stopAndLogTime();
         timerLabel.setVisible(false);
         boardPanel.setGameMode(GameMode.NONE);
@@ -244,6 +275,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
         finishButton.setVisible(false);
         giveUpButton.setVisible(false);
         movesLeftLabel.setVisible(false);
+        //returnButton.setVisible(true);
         turnIndicator.setText(winner.getPlayerName() + " won!");
         showWinnerPopup(winner);
     }
@@ -258,7 +290,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
             turnIndicator.setText("Silver Player's Turn");
         }
 
-        startTimer(7);
+        startTimer(10);
 
         gameControllerPanel.setBackground(turnColor);
         if (game.getPhase() <= 2){

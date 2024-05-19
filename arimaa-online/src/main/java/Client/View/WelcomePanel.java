@@ -73,5 +73,12 @@ public class WelcomePanel extends JPanel {
             }
         });
 
+        playHistoryButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                view.loadReplay();
+            }
+        });
+
     }
 }
