@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.ArrayList;
 
 public class GameView extends JPanel implements Runnable{
     private static JFrame window;
@@ -14,6 +15,7 @@ public class GameView extends JPanel implements Runnable{
     private static JPanel currentRightPanel;
     private GameModel game;
     private BoardPanel boardPanel;
+    private ReplayControllerPanel replayPanel;
     private GameControllerPanel controlPanel;
     final int FPS = 60;
     Thread gameThread;
@@ -26,7 +28,7 @@ public class GameView extends JPanel implements Runnable{
     public void init() {
         window = new JFrame("Arimaa Game");
         window.setLayout(new BorderLayout());
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         window.setResizable(false);
 
         WelcomePanel welcomePanel = new WelcomePanel(game, this);
@@ -50,36 +52,52 @@ public class GameView extends JPanel implements Runnable{
         boardPanel = new BoardPanel(game);
         boardPanel.setGame(game);
         changeCurrentPanel(boardPanel);
-        controlPanel = new GameControllerPanel(game, boardPanel);
+        controlPanel = new GameControllerPanel(game, boardPanel,this);
         game.setGameListener(controlPanel);
         currentRightPanel = controlPanel;
         changeRightPanel(currentRightPanel);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-    public void continueGame(GameState gameState) {
-        Player player1 = new Player(1, gameState.player1.getPlayerName(), false);
-        Player player2 = new Player(2, gameState.player1.getPlayerName(), false);
+    public void continueGame(ArrayList<GameState> gameState) {
+        Player player1 = new Player(1, gameState.getLast().player1.getPlayerName(), false);
+        Player player2 = new Player(2, gameState.getLast().player1.getPlayerName(), false);
         game.setPlayers(player1, player2);
-        game.getBoard().populateBoardFrom2DString(gameState.boardState, player1, player2);
+        game.getBoard().populateBoardFrom2DString(gameState.getLast().boardState, player1, player2);
         boardPanel = new BoardPanel(game);
         boardPanel.setGame(game);
         changeCurrentPanel(boardPanel);
-        controlPanel = new GameControllerPanel(game, boardPanel);
+        controlPanel = new GameControllerPanel(game, boardPanel, this);
         game.setGameListener(controlPanel);
         currentRightPanel = controlPanel;
         changeRightPanel(currentRightPanel);
-        controlPanel.startTimerWithRemainingTime(gameState.remainingTime);
+        controlPanel.startTimerWithRemainingTime(gameState.getLast().remainingTime);
+        controlPanel.loadSnapInfo(gameState);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
 
+    public void reviewGame(ArrayList<GameState> gameState) {
+        Player player1 = new Player(1, gameState.getLast().player1.getPlayerName(), false);
+        Player player2 = new Player(2, gameState.getLast().player1.getPlayerName(), false);
+        game.setPlayers(player1, player2);
+        game.getBoard().populateBoardFrom2DString(gameState.getFirst().boardState, player1, player2);
+        boardPanel = new BoardPanel(game);
+        boardPanel.setGame(game);
+        changeCurrentPanel(boardPanel);
+        replayPanel = new ReplayControllerPanel(game,this);
+        currentRightPanel = replayPanel;
+        changeRightPanel(currentRightPanel);
+        replayPanel.loadSnapInfo(gameState);
     }
 
     public void loadSave() {
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Load Game State");
+        fileChooser.setDialogTitle("Load Game");
         int userSelection = fileChooser.showOpenDialog(null);
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             File fileToLoad = fileChooser.getSelectedFile();
-            GameState gameState = Loader.loadGame(fileToLoad);
+            ArrayList<GameState> gameState = Loader.loadGame(fileToLoad);
 
-            if (gameState != null && !gameState.isGameFinished) {
+            if (gameState != null && !gameState.getLast().isGameFinished) {
                 game.loadState(gameState);
                 continueGame(gameState);
             }else{
@@ -87,6 +105,28 @@ public class GameView extends JPanel implements Runnable{
                         null,
                         "The save file is corrupted or the game is only available for replay.",
                         "Load Game",
+                        JOptionPane.WARNING_MESSAGE
+                );
+            }
+        }
+    }
+
+    public void loadReplay() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Load Replay");
+        int userSelection = fileChooser.showOpenDialog(null);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToLoad = fileChooser.getSelectedFile();
+            ArrayList<GameState> gameState = Loader.loadGame(fileToLoad);
+
+            if (gameState != null && gameState.getLast().isGameFinished) {
+                game.loadReplayState(gameState);
+                reviewGame(gameState);
+            }else{
+                JOptionPane.showMessageDialog(
+                        null,
+                        "The save file is corrupted or the game is not finished.",
+                        "Load Replay",
                         JOptionPane.WARNING_MESSAGE
                 );
             }
@@ -167,6 +207,10 @@ public class GameView extends JPanel implements Runnable{
         currentRightPanel = newPanel;
         window.pack();
         window.repaint();
+    }
+
+    public void clearPanels() {
+        window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
     }
 
     public void launchGame() {

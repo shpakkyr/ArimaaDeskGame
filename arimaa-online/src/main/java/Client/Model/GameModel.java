@@ -1,6 +1,8 @@
 package Client.Model;
 
-import Client.View.GameView;
+import Client.View.*;
+
+import java.util.ArrayList;
 
 public class GameModel {
     private Player player1;
@@ -51,9 +53,9 @@ public class GameModel {
     }
 
     public void endGameGiveUp() {
-        setWinner(enemyPlayer);
+        setWinner(getEnemyPlayer());
         isGameFinished = true;
-        gameListener.onGameEnded(winner);
+        gameListener.onGameEnded(getEnemyPlayer());
     }
 
     public void incrementPhase() {
@@ -127,14 +129,25 @@ public class GameModel {
         return new GameState(player1, player2, currentPlayer, enemyPlayer, winner, phase, movesLeft, isGameFinished, board.copyBoard(), remainingTime);
     }
 
-    public void loadState(GameState gameState) {
-        this.player1 = gameState.player1;
-        this.player2 = gameState.player2;
-        this.currentPlayer = gameState.currentPlayer;
-        this.enemyPlayer = gameState.enemyPlayer;
-        this.winner = gameState.winner;
-        this.phase = gameState.phase;
-        this.movesLeft = gameState.movesLeft;
-        this.isGameFinished = gameState.isGameFinished;
+    public void loadState(ArrayList<GameState> gameState) {
+        this.player1 = gameState.getLast().player1;
+        this.player2 = gameState.getLast().player2;
+        this.currentPlayer = gameState.getLast().currentPlayer;
+        this.enemyPlayer = gameState.getLast().enemyPlayer;
+        this.winner = gameState.getLast().winner;
+        this.phase = gameState.getLast().phase;
+        this.movesLeft = gameState.getLast().movesLeft;
+        this.isGameFinished = gameState.getLast().isGameFinished;
+    }
+
+    public void loadReplayState(ArrayList<GameState> gameState) {
+        this.player1 = gameState.getFirst().player1;
+        this.player2 = gameState.getFirst().player2;
+        this.currentPlayer = gameState.getFirst().currentPlayer;
+        this.enemyPlayer = gameState.getFirst().enemyPlayer;
+        this.winner = gameState.getFirst().winner;
+        this.phase = gameState.getFirst().phase;
+        this.movesLeft = gameState.getFirst().movesLeft;
+        this.isGameFinished = gameState.getFirst().isGameFinished;
     }
 }

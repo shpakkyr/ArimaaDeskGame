@@ -28,30 +28,6 @@ public class Board implements Serializable {
     public void placeTroop(Troop troop, Offset2D offset2d){
         board[offset2d.getRow()][offset2d.getColumn()] = new Tile(troop);
     }
-    public String[][] copyBoard() {
-        String[][] copy = new String[8][8];
-        for(int j = 0; j < DIMENSION; j++) {
-            for (int i = 0; i < DIMENSION; i++) {
-                if(this.board[j][i].getTroop() == null){
-                    copy[j][i] = "";
-                }else {
-                    String playerCheck = TroopType.toNotation(this.board[j][i].getTroop().getType());
-                    if(this.board[j][i].getPlayer().getPlayerId() == 1){
-                        copy[j][i] = playerCheck.toUpperCase();
-                    }else{
-                        copy[j][i] = playerCheck;
-                    }
-                }
-            }
-        }
-//        for(int j = 0; j < 8; j++) {
-//            for (int i = 0; i < 8; i++) {
-//                System.out.print(copy[j][i] + " ");
-//            }
-//            System.out.print("\n");
-//        }
-        return copy;
-    }
     public void placePlayerOnTile(Player player, Offset2D offset2D) {
         getTileAt(offset2D).setPlayer(player);
     }
@@ -416,5 +392,30 @@ public class Board implements Serializable {
                 placePlayerOnTile(player, position);
             }
         }
+    }
+
+    public String[][] copyBoard() {
+        String[][] copy = new String[8][8];
+        for(int j = 0; j < DIMENSION; j++) {
+            for (int i = 0; i < DIMENSION; i++) {
+                if(this.board[j][i].getTroop() == null){
+                    copy[j][i] = "";
+                }else {
+                    String playerCheck = TroopType.toNotation(this.board[j][i].getTroop().getType());
+                    if(this.board[j][i].getPlayer().getPlayerId() == 1){
+                        copy[j][i] = playerCheck.toUpperCase();
+                    }else{
+                        copy[j][i] = playerCheck;
+                    }
+                }
+            }
+        }
+//        for(int j = 0; j < 8; j++) {
+//            for (int i = 0; i < 8; i++) {
+//                System.out.print(copy[j][i] + " ");
+//            }
+//            System.out.print("\n");
+//        }
+        return copy;
     }
 }
