@@ -104,7 +104,6 @@ public class ReplayControllerPanel extends JPanel{
             }
         });
         returnButton.addActionListener(e -> {
-            view.clearPanels();
             view.init();
         });
     }

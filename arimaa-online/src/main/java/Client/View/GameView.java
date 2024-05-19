@@ -209,10 +209,6 @@ public class GameView extends JPanel implements Runnable{
         window.repaint();
     }
 
-    public void clearPanels() {
-        window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
-    }
-
     public void launchGame() {
         gameThread = new Thread(this);
         gameThread.start();
