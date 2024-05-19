@@ -283,7 +283,7 @@ public class BoardPanel extends JPanel {
         if (selectedPositions.size() == 0) {
             resetSquaresColors();
             fillSquareWithColor(squarePosition, currentMode.getColor());
-            fillSquaresWithColor(game.getBoard().getPositionsOfPossiblePullingPieces(squarePosition), Color.WHITE);
+            fillSquaresWithColor(game.getBoard().getPositionsOfPossiblePushingPieces(squarePosition), Color.WHITE);
         } else if (selectedPositions.size() == 1) {
             resetSquaresColors();
             selectedPositions.add(squarePosition);

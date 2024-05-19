@@ -30,8 +30,8 @@ public class Board implements Serializable {
     }
     public String[][] copyBoard() {
         String[][] copy = new String[8][8];
-        for(int j = 0; j < 8; j++) {
-            for (int i = 0; i < 8; i++) {
+        for(int j = 0; j < DIMENSION; j++) {
+            for (int i = 0; i < DIMENSION; i++) {
                 if(this.board[j][i].getTroop() == null){
                     copy[j][i] = "";
                 }else {
@@ -170,6 +170,8 @@ public class Board implements Serializable {
         for (Directions direction : Directions.values()) {
             int newRaw = offset2D.getRow() + direction.getRow();
             int newColumn = offset2D.getColumn() + direction.getColumn();
+            if (newRaw < 0 || newRaw >= 8 || newColumn < 0 || newColumn >= 8)
+                continue;
             Offset2D newOffset2d = new Offset2D(newRaw, newColumn);
             if (getTroopAt(newOffset2d) != null && getPlayerAt(newOffset2d) == player)
                 return true;
@@ -320,7 +322,7 @@ public class Board implements Serializable {
         Player owner = getPlayerAt(position);
         for (Offset2D onePosition : position.getAdjacentPositions(Directions.get4Directions())){
             Troop adjacentPiece = getTroopAt(onePosition);
-            if (adjacentPiece != null && getPlayerAt(position) != owner && getTroopAt(position).getType().isStrongerThan(piece.getType())){
+            if (adjacentPiece != null && getPlayerAt(onePosition) != owner && getTroopAt(onePosition).getType().isStrongerThan(piece.getType())){
                 positionsArrayList.add(onePosition);
             }
         }
