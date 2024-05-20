@@ -52,7 +52,7 @@ public class GameView extends JPanel implements Runnable{
         boardPanel = new BoardPanel(game);
         boardPanel.setGame(game);
         changeCurrentPanel(boardPanel);
-        controlPanel = new GameControllerPanel(game, boardPanel,this);
+        controlPanel = new GameControllerPanel(game, boardPanel, vsComputer);
         game.setGameListener(controlPanel);
         currentRightPanel = controlPanel;
         changeRightPanel(currentRightPanel);
@@ -60,13 +60,13 @@ public class GameView extends JPanel implements Runnable{
     }
     public void continueGame(ArrayList<GameState> gameState) {
         Player player1 = new Player(1, gameState.getLast().player1.getPlayerName(), false);
-        Player player2 = new Player(2, gameState.getLast().player1.getPlayerName(), false);
+        Player player2 = new Player(2, gameState.getLast().player1.getPlayerName(), gameState.getFirst().vsComputer);
         game.setPlayers(player1, player2);
         game.getBoard().populateBoardFrom2DString(gameState.getLast().boardState, player1, player2);
         boardPanel = new BoardPanel(game);
         boardPanel.setGame(game);
         changeCurrentPanel(boardPanel);
-        controlPanel = new GameControllerPanel(game, boardPanel, this);
+        controlPanel = new GameControllerPanel(game, boardPanel, gameState.getFirst().vsComputer);
         game.setGameListener(controlPanel);
         currentRightPanel = controlPanel;
         changeRightPanel(currentRightPanel);
@@ -77,7 +77,7 @@ public class GameView extends JPanel implements Runnable{
 
     public void reviewGame(ArrayList<GameState> gameState) {
         Player player1 = new Player(1, gameState.getLast().player1.getPlayerName(), false);
-        Player player2 = new Player(2, gameState.getLast().player1.getPlayerName(), false);
+        Player player2 = new Player(2, gameState.getLast().player2.getPlayerName(), false);
         game.setPlayers(player1, player2);
         game.getBoard().populateBoardFrom2DString(gameState.getFirst().boardState, player1, player2);
         boardPanel = new BoardPanel(game);
@@ -89,7 +89,7 @@ public class GameView extends JPanel implements Runnable{
         replayPanel.loadSnapInfo(gameState);
     }
 
-    public void loadSave() {
+    public void loadSave(boolean vsComputer) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Load Game");
         int userSelection = fileChooser.showOpenDialog(null);
@@ -97,9 +97,23 @@ public class GameView extends JPanel implements Runnable{
             File fileToLoad = fileChooser.getSelectedFile();
             ArrayList<GameState> gameState = Loader.loadGame(fileToLoad);
 
-            if (gameState != null && !gameState.getLast().isGameFinished) {
+            if (gameState != null && !gameState.getLast().isGameFinished && vsComputer == gameState.getFirst().vsComputer) {
                 game.loadState(gameState);
                 continueGame(gameState);
+            }else if(gameState != null && vsComputer != gameState.getFirst().vsComputer && !vsComputer) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "The save file is meant for single player mode.",
+                        "Load Game",
+                        JOptionPane.WARNING_MESSAGE
+                );
+            }else if(gameState != null && vsComputer != gameState.getFirst().vsComputer && vsComputer){
+                JOptionPane.showMessageDialog(
+                        null,
+                        "The save file is meant for local multiplayer player mode.",
+                        "Load Game",
+                        JOptionPane.WARNING_MESSAGE
+                );
             }else{
                 JOptionPane.showMessageDialog(
                         null,

@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class GameControllerPanel extends JPanel implements GameListener {
@@ -20,17 +21,19 @@ public class GameControllerPanel extends JPanel implements GameListener {
     private final JButton finishButton;
     private final JButton giveUpButton;
     private final JButton saveButton;
-    private final JButton returnButton;
+    private final JButton compButton;
     private final BoardPanel boardPanel;
     private GameModel game;
     private ArrayList<GameState> gameState = new ArrayList<GameState>();
     private final JPanel gameControllerPanel;
     private int firstTurnCheck = 0;
     private CountdownTimer timer;
+    private boolean vsComputer;
     private final JLabel timerLabel;
-    public GameControllerPanel(GameModel game, BoardPanel boardPanel, GameView view) {
+    public GameControllerPanel(GameModel game, BoardPanel boardPanel, boolean vsComputer) {
         this.game = game;
         this.boardPanel = boardPanel;
+        this.vsComputer = vsComputer;
         setLayout(new BorderLayout());
         setBorder(new EmptyBorder(0, 0, 0, 0));
 
@@ -98,8 +101,8 @@ public class GameControllerPanel extends JPanel implements GameListener {
         giveUpButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, giveUpButton.getMinimumSize().height));
         saveButton = new JButton("Save Game");
         saveButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, saveButton.getMinimumSize().height));
-        returnButton = new JButton("Main menu");
-        returnButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, returnButton.getMinimumSize().height));
+        compButton = new JButton("PC Move");
+        compButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, compButton.getMinimumSize().height));
 
         gameControllerPanel = createGroupPanel(Color.WHITE);
         gameControllerPanel.setLayout(new BoxLayout(gameControllerPanel, BoxLayout.Y_AXIS));
@@ -118,10 +121,10 @@ public class GameControllerPanel extends JPanel implements GameListener {
         gameControllerPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         gameControllerPanel.add(saveButton);
         gameControllerPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-        gameControllerPanel.add(returnButton);
+        gameControllerPanel.add(compButton);
         gameControllerPanel.add(Box.createVerticalGlue());
 
-        returnButton.setVisible(false);
+        compButton.setVisible(false);
 
         JLabel playerBottomName = createColoredLabel("Gold Player (" + game.getPlayer1().getPlayerName() + ")", Color.ORANGE, 14, false);
         JPanel player1infoGroup = createGroupPanel(Color.BLACK);
@@ -173,10 +176,21 @@ public class GameControllerPanel extends JPanel implements GameListener {
         giveUpButton.addActionListener(e -> {
             game.endGameGiveUp();
         });
-//        returnButton.addActionListener(e -> {
-//            view.clearPanels();
-//            view.init();
-//        });
+
+        compButton.addActionListener(e -> {
+
+            if (game.getPhase() <= 2) {
+                finishButton.doClick();
+                return;
+            }
+
+            if (noneButton.isSelected()) {
+                compNoneSelect(game.getMovesLeft() >= 2);
+            } else {
+                compMoveSelect();
+            }
+        });
+
         saveButton.addActionListener(e -> saveGame());
     }
 
@@ -200,7 +214,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
     }
 
     public void boardSnap(){
-        gameState.add(game.saveState(timer.getRemainingTime()));
+        gameState.add(game.saveState(timer.getRemainingTime(), vsComputer));
 
         for(int j = 0; j < 8; j++) {
             for (int i = 0; i < 8; i++) {
@@ -275,7 +289,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
         finishButton.setVisible(false);
         giveUpButton.setVisible(false);
         movesLeftLabel.setVisible(false);
-        //returnButton.setVisible(true);
+        compButton.setVisible(false);
         turnIndicator.setText(winner.getPlayerName() + " won!");
         showWinnerPopup(winner);
     }
@@ -293,6 +307,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
         startTimer(10);
 
         gameControllerPanel.setBackground(turnColor);
+
         if (game.getPhase() <= 2){
             movesLeftLabel.setText("Arrange your pieces");
             switchButton.setVisible(true);
@@ -304,6 +319,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
             finishButton.setVisible(true);
             giveUpButton.setVisible(false);
             saveButton.setVisible(false);
+            compButton.setVisible(false);
 
         } else {
             movesLeftLabel.setText("4 moves left");
@@ -316,6 +332,8 @@ public class GameControllerPanel extends JPanel implements GameListener {
             finishButton.setVisible(true);
             giveUpButton.setVisible(true);
             saveButton.setVisible(true);
+            compButton.setVisible(false);
+
         }
         if (game.getCurrentPlayer().isComputer()){
             finishButton.setVisible(false);
@@ -325,12 +343,40 @@ public class GameControllerPanel extends JPanel implements GameListener {
             stepButton.setVisible(false);
             pushButton.setVisible(false);
             pullButton.setVisible(false);
+            saveButton.setVisible(false);
+            compButton.setVisible(true);
         }
 
     }
+    private void compNoneSelect(boolean complexMove) {
+        boolean canPull = !game.getBoard().canPullPositions(game.getCurrentPlayer(), game.getEnemyPlayer()).isEmpty();
+        boolean canPush = !game.getBoard().canPullPositions(game.getCurrentPlayer(), game.getEnemyPlayer()).isEmpty();
 
+        if (complexMove) {
+            if (canPush) {
+                pushButton.doClick();
+            } else if (canPull) {
+                pullButton.doClick();
+            } else {
+                stepButton.doClick();
+            }
+        } else {
+            stepButton.doClick();
+        }
+    }
+
+    private void compMoveSelect() {
+        int whiteSquares = boardPanel.getPositionsOfSquaresWithColor(Color.WHITE).size();
+
+        if (whiteSquares > 0) {
+            boolean isPushSelected = pushButton.isSelected();
+            boardPanel.clickOnRandomWhiteSquare(isPushSelected);
+        } else {
+            finishButton.doClick();
+        }
+    }
     public void showWinnerPopup(Player winner) {
-        String message = winner.getPlayerName() + " won. Congratulations!";
+        String message = winner.getPlayerName() + " won!";
         JOptionPane.showMessageDialog(this, message, "Game Over", JOptionPane.INFORMATION_MESSAGE);
     }
 

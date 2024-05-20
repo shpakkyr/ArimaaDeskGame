@@ -327,24 +327,34 @@ public class BoardPanel extends JPanel {
     public void clickOnRandomWhiteSquare(boolean preferTrap) {
         ArrayList<Offset2D> positions = getPositionsOfSquaresWithColor(Color.WHITE);
         Random random = new Random();
-        Offset2D position = positions.get(random.nextInt(positions.size()));
-        if (positions.size() > 1) {
-            if (preferTrap) {
-                for (Offset2D onePosition : positions) {
-                    if (Offset2D.TRAP_OFFSET.contains(onePosition)) {
-                        position = onePosition;
-                    }
-                }
-            } else {
-                while (Offset2D.TRAP_OFFSET.contains(position)) {
-                    position = positions.get(random.nextInt(positions.size()));
-                }
-            }
-        }
+
+        Offset2D position = selectPosition(positions, preferTrap, random);
+
         JPanel square = tiles[position.getRow()][position.getColumn()];
         MouseEvent event = new MouseEvent(square, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 1, 1, 1, false);
         for (MouseListener listener : square.getMouseListeners()) {
             listener.mouseClicked(event);
         }
+    }
+
+    private Offset2D selectPosition(ArrayList<Offset2D> positions, boolean preferTrap, Random random) {
+        if (positions.size() <= 1) {
+            return positions.getFirst();
+        }
+
+        if (preferTrap) {
+            for (Offset2D onePosition : positions) {
+                if (Offset2D.TRAP_OFFSET.contains(onePosition)) {
+                    return onePosition;
+                }
+            }
+        }
+
+        Offset2D position;
+        do {
+            position = positions.get(random.nextInt(positions.size()));
+        } while (preferTrap && Offset2D.TRAP_OFFSET.contains(position) && positions.size() > 1);
+
+        return position;
     }
 }

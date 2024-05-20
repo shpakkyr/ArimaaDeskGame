@@ -110,6 +110,8 @@ public class GameModel {
     public void setPlayers(Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
+        this.currentPlayer = player1;
+        this.enemyPlayer = player2;
     }
 
     public void setGameListener(GameListener gameListener) {
@@ -125,8 +127,8 @@ public class GameModel {
             gameListener.onGameEnded(winner);
         }
     }
-    public GameState saveState(long remainingTime) {
-        return new GameState(player1, player2, currentPlayer, enemyPlayer, winner, phase, movesLeft, isGameFinished, board.copyBoard(), remainingTime);
+    public GameState saveState(long remainingTime, boolean vsComputer) {
+        return new GameState(player1, player2, currentPlayer, enemyPlayer, winner, phase, movesLeft, isGameFinished, board.copyBoard(), remainingTime, vsComputer);
     }
 
     public void loadState(ArrayList<GameState> gameState) {
