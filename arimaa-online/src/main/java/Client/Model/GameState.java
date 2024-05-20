@@ -17,9 +17,10 @@ public class GameState implements Serializable {
     public final boolean isGameFinished;
     public final String[][] boardState;
     public final long remainingTime;
+    public final boolean vsComputer;
 
 
-    public GameState(Player player1, Player player2, Player currentPlayer, Player enemyPlayer, Player winner, int phase, int movesLeft, boolean isGameFinished, String[][] boardState, long remainingTime) {
+    public GameState(Player player1, Player player2, Player currentPlayer, Player enemyPlayer, Player winner, int phase, int movesLeft, boolean isGameFinished, String[][] boardState, long remainingTime, boolean vsComputer) {
         this.player1 = player1;
         this.player2 = player2;
         this.currentPlayer = currentPlayer;
@@ -30,5 +31,6 @@ public class GameState implements Serializable {
         this.isGameFinished = isGameFinished;
         this.boardState = boardState;
         this.remainingTime = remainingTime;
+        this.vsComputer = vsComputer;
     }
 }

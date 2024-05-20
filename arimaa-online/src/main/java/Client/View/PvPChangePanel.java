@@ -59,7 +59,7 @@ public class PvPChangePanel extends JPanel {
         SButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                view.loadSave();
+                view.loadSave(false);
             }
         });
 
