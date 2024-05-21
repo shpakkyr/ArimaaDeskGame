@@ -228,6 +228,10 @@ public class GameView extends JPanel implements Runnable{
         gameThread.start();
     }
 
+    public void closeWindow(){
+        window.dispose();
+    }
+
     @Override
     public void run() {
         double drawInterval = 1000000000/FPS;
