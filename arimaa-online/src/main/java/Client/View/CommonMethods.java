@@ -6,7 +6,7 @@ import java.awt.*;
 /**
  * CommonMethods is a utility class that provides common UI methods for creating and configuring buttons for main menu and sub menu.
  */
-public class CommonMethods extends JPanel {
+public class CommonMethods{
 
     /**
      * Creates a JButton with the specified text and centers its alignment.

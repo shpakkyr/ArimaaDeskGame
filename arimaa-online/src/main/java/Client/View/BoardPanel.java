@@ -1,5 +1,6 @@
 package Client.View;
 
+import Client.Controller.Saver;
 import Client.Model.*;
 
 import javax.imageio.ImageIO;
@@ -9,14 +10,16 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static Client.View.GameMode.STEP;
 
 /**
  * BoardPanel represents the game board UI and handles user interactions with the game.
  */
 public class BoardPanel extends JPanel {
+    private static final Logger logger = Logger.getLogger(BoardPanel.class.getName());
+
     private GameModel game;
     private GameMode currentMode = GameMode.NONE;
     private final JPanel[][] tiles;
@@ -101,10 +104,10 @@ public class BoardPanel extends JPanel {
                 BufferedImage bufferedImage = ImageIO.read(inputStream);
                 icon = new ImageIcon(bufferedImage);
             } else {
-                System.err.println("Resource not found: " + path);
+                logger.info("Resource not found: " + path);
             }
         } catch (IOException e) {
-            System.err.println("Reading image error: " + path);
+            logger.info("Reading image error: " + path);
             e.printStackTrace();
         }
         return icon;

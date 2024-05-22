@@ -22,7 +22,7 @@ public class GameView extends JPanel implements Runnable{
     private BoardPanel boardPanel;
     private ReplayControllerPanel replayPanel;
     private GameControllerPanel controlPanel;
-    final int FPS = 60;
+    static final int FPS = 60;
     Thread gameThread;
     private final Board board = new Board();
 
