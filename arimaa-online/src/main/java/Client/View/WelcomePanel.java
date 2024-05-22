@@ -62,14 +62,14 @@ public class WelcomePanel extends JPanel {
         PvCButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GameView.changeCurrentPanel(new PvCChangePanel(game, view));
+                GameView.changeCurrentPanel(new GameModePanel(game, view, true));
             }
         });
 
         PvPButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GameView.changeCurrentPanel(new PvPChangePanel(game, view));
+                GameView.changeCurrentPanel(new GameModePanel(game, view, false));
             }
         });
 

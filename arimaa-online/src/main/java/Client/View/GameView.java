@@ -9,11 +9,16 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
 
+/**
+ * GameView class is responsible for managing the game window and handling game-related actions.
+ * It includes methods for initializing the game, starting a new game, continuing a saved game,
+ * reviewing a finished game, and loading saved game or replay files.
+ */
 public class GameView extends JPanel implements Runnable{
     private static JFrame window;
     private static JPanel currentPanel;
     private static JPanel currentRightPanel;
-    private GameModel game;
+    private final GameModel game;
     private BoardPanel boardPanel;
     private ReplayControllerPanel replayPanel;
     private GameControllerPanel controlPanel;
@@ -21,10 +26,18 @@ public class GameView extends JPanel implements Runnable{
     Thread gameThread;
     private final Board board = new Board();
 
+    /**
+     * Constructor for GameView class.
+     *
+     * @param game The game model.
+     */
     public GameView(GameModel game) {
         this.game = game;
     }
 
+    /**
+     * Initializes the game window and sets up the welcome panel.
+     */
     public void init() {
         window = new JFrame("Arimaa Game");
         window.setLayout(new BorderLayout());
@@ -44,6 +57,13 @@ public class GameView extends JPanel implements Runnable{
 
     }
 
+    /**
+     * Starts a new game with specified player names and game mode.
+     *
+     * @param player1name Name of player 1.
+     * @param player2name Name of player 2.
+     * @param vsComputer  Whether the game is against a computer.
+     */
     private void startNewGame(String player1name, String player2name, boolean vsComputer){
         Player player1 = new Player(1, player1name, false);
         Player player2 = new Player(2, player2name, vsComputer);
@@ -58,9 +78,15 @@ public class GameView extends JPanel implements Runnable{
         changeRightPanel(currentRightPanel);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
+
+    /**
+     * Continues a game from a saved state.
+     *
+     * @param gameState The saved game state.
+     */
     public void continueGame(ArrayList<GameState> gameState) {
         Player player1 = new Player(1, gameState.getLast().player1.getPlayerName(), false);
-        Player player2 = new Player(2, gameState.getLast().player1.getPlayerName(), gameState.getFirst().vsComputer);
+        Player player2 = new Player(2, gameState.getLast().player2.getPlayerName(), gameState.getFirst().vsComputer);
         game.setPlayers(player1, player2);
         game.getBoard().populateBoardFrom2DString(gameState.getLast().boardState, player1, player2);
         boardPanel = new BoardPanel(game);
@@ -75,6 +101,11 @@ public class GameView extends JPanel implements Runnable{
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    /**
+     * Reviews a finished game from a saved replay state.
+     *
+     * @param gameState The saved replay state.
+     */
     public void reviewGame(ArrayList<GameState> gameState) {
         Player player1 = new Player(1, gameState.getLast().player1.getPlayerName(), false);
         Player player2 = new Player(2, gameState.getLast().player2.getPlayerName(), false);
@@ -89,6 +120,11 @@ public class GameView extends JPanel implements Runnable{
         replayPanel.loadSnapInfo(gameState);
     }
 
+    /**
+     * Loads a saved game state from a file.
+     *
+     * @param vsComputer Whether the game is against a computer.
+     */
     public void loadSave(boolean vsComputer) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Load Game");
@@ -97,6 +133,7 @@ public class GameView extends JPanel implements Runnable{
             File fileToLoad = fileChooser.getSelectedFile();
             ArrayList<GameState> gameState = Loader.loadGame(fileToLoad);
 
+            //checks for equal game mode of a save file and selected menu and if game is still going on
             if (gameState != null && !gameState.getLast().isGameFinished && vsComputer == gameState.getFirst().vsComputer) {
                 game.loadState(gameState);
                 continueGame(gameState);
@@ -125,6 +162,9 @@ public class GameView extends JPanel implements Runnable{
         }
     }
 
+    /**
+     * Loads a game replay from a file.
+     */
     public void loadReplay() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Load Replay");
@@ -133,6 +173,7 @@ public class GameView extends JPanel implements Runnable{
             File fileToLoad = fileChooser.getSelectedFile();
             ArrayList<GameState> gameState = Loader.loadGame(fileToLoad);
 
+            //checks if game was finished to view replay
             if (gameState != null && gameState.getLast().isGameFinished) {
                 game.loadReplayState(gameState);
                 reviewGame(gameState);
@@ -147,6 +188,12 @@ public class GameView extends JPanel implements Runnable{
         }
     }
 
+    /**
+     * Displays a window for entering players names and starting a new game.
+     *
+     * @param parentFrame The parent frame for the dialog.
+     * @param vsComputer  Whether the game is against a computer.
+     */
     public void showNewGameDialog(JFrame parentFrame, boolean vsComputer) {
         String gameType = vsComputer ? "single-player" : "multiplayer";
         JDialog newGameDialog = new JDialog(parentFrame, "New " + gameType + " game", true);
@@ -207,6 +254,11 @@ public class GameView extends JPanel implements Runnable{
         newGameDialog.setVisible(true);
     }
 
+    /**
+     * Changes the current main panel to a new panel.
+     *
+     * @param newPanel The new panel to be displayed.
+     */
     public static void changeCurrentPanel(JPanel newPanel) {
         window.remove(currentPanel);
         window.add(newPanel, BorderLayout.CENTER);
@@ -215,6 +267,11 @@ public class GameView extends JPanel implements Runnable{
         window.repaint();
     }
 
+    /**
+     * Changes the current right panel to a new panel.
+     *
+     * @param newPanel The new panel to be displayed.
+     */
     public static void changeRightPanel(JPanel newPanel) {
         window.remove(currentRightPanel);
         window.add(newPanel, BorderLayout.EAST);
@@ -223,15 +280,25 @@ public class GameView extends JPanel implements Runnable{
         window.repaint();
     }
 
+    /**
+     * Launches the game thread.
+     */
     public void launchGame() {
         gameThread = new Thread(this);
         gameThread.start();
     }
 
+    /**
+     * Closes the game window.
+     */
     public void closeWindow(){
         window.dispose();
     }
 
+    /**
+     * The run method is called when the game thread is started. It continuously updates
+     * and repaints the game at a fixed frame rate defined by the FPS variable.
+     */
     @Override
     public void run() {
         double drawInterval = 1000000000/FPS;

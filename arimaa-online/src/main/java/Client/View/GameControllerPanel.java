@@ -7,9 +7,11 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+/**
+ * GameControllerPanel displays information about current turn and controls for individual moves.
+ */
 public class GameControllerPanel extends JPanel implements GameListener {
     private final JLabel turnIndicator;
     private final JLabel movesLeftLabel;
@@ -28,7 +30,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
     private final JPanel gameControllerPanel;
     private int firstTurnCheck = 0;
     private CountdownTimer timer;
-    private boolean vsComputer;
+    private final boolean vsComputer;
     private final JLabel timerLabel;
     public GameControllerPanel(GameModel game, BoardPanel boardPanel, boolean vsComputer) {
         this.game = game;
@@ -37,12 +39,14 @@ public class GameControllerPanel extends JPanel implements GameListener {
         setLayout(new BorderLayout());
         setBorder(new EmptyBorder(0, 0, 0, 0));
 
+        // NORTH - player 2 info
         JLabel playerTopName = createColoredLabel("Silver Player (" + game.getPlayer2().getPlayerName() + ")", Color.LIGHT_GRAY, 14, false);
         JPanel player2infoGroup = createGroupPanel(Color.BLACK);
         player2infoGroup.add(Box.createRigidArea(new Dimension(0, 7)));
         player2infoGroup.add(playerTopName);
         player2infoGroup.add(Box.createRigidArea(new Dimension(0, 5)));
 
+        //CENTER - timer, turn info and controll buttons
         turnIndicator = new JLabel("Gold Player's Turn");
         turnIndicator.setForeground(Color.BLACK);
 
@@ -50,6 +54,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
 
         movesLeftLabel = new JLabel("Arrange your pieces");
 
+        //Radio buttons
         switchButton = new JRadioButton(GameMode.SWITCH.getModeName());
         switchButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, switchButton.getMinimumSize().height));
         switchButton.setOpaque(true);
@@ -95,6 +100,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
         radioButtonsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         radioButtonsPanel.add(pullButton);
 
+        //Buttons for finishing turn, saving game to a file, giving up and move from computer during single player mode
         finishButton = new JButton("Finish");
         finishButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, finishButton.getMinimumSize().height));
         giveUpButton = new JButton("Give Up");
@@ -103,7 +109,9 @@ public class GameControllerPanel extends JPanel implements GameListener {
         saveButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, saveButton.getMinimumSize().height));
         compButton = new JButton("PC Move");
         compButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, compButton.getMinimumSize().height));
+        compButton.setVisible(false);
 
+        //CENTER constructor
         gameControllerPanel = createGroupPanel(Color.WHITE);
         gameControllerPanel.setLayout(new BoxLayout(gameControllerPanel, BoxLayout.Y_AXIS));
         gameControllerPanel.add(Box.createVerticalGlue());
@@ -124,23 +132,25 @@ public class GameControllerPanel extends JPanel implements GameListener {
         gameControllerPanel.add(compButton);
         gameControllerPanel.add(Box.createVerticalGlue());
 
-        compButton.setVisible(false);
-
+        //SOUTH - player 1 info
         JLabel playerBottomName = createColoredLabel("Gold Player (" + game.getPlayer1().getPlayerName() + ")", Color.ORANGE, 14, false);
         JPanel player1infoGroup = createGroupPanel(Color.BLACK);
         player1infoGroup.add(playerBottomName);
         player1infoGroup.add(Box.createRigidArea(new Dimension(0, 5)));
         player1infoGroup.add(Box.createRigidArea(new Dimension(0, 27)));
 
+        //General constructor
         add(player2infoGroup, BorderLayout.NORTH);
         add(gameControllerPanel, BorderLayout.CENTER);
         add(player1infoGroup, BorderLayout.SOUTH);
 
+        //Show relevant buttons during turn
         setTurnFormatting();
         if (game.getPhase() >= 3){
             onMovesLeftChanged(game.getMovesLeft());
         }
 
+        //Action listeners for all buttons
         finishButton.addActionListener(e -> {
             firstTurnCheck++;
             if(firstTurnCheck > 1 && game.getMovesLeft() == 4) {
@@ -178,12 +188,13 @@ public class GameControllerPanel extends JPanel implements GameListener {
         });
 
         compButton.addActionListener(e -> {
-
+            //computer does not change position of his figures
             if (game.getPhase() <= 2) {
                 finishButton.doClick();
                 return;
             }
 
+            //algorithm to make computer spend all moves per turn
             if (noneButton.isSelected()) {
                 compNoneSelect(game.getMovesLeft() >= 2);
             } else {
@@ -194,6 +205,12 @@ public class GameControllerPanel extends JPanel implements GameListener {
         saveButton.addActionListener(e -> saveGame());
     }
 
+    /**
+     * Method to save the current game state to a file chosen by the user.
+     * The method pauses the game timer, opens a file chooser dialog for the user
+     * to select the save location, and then saves the game state to the selected file.
+     * After saving, the timer is resumed with the remaining time.
+     */
     public void saveGame() {
         timer.pauseTimer();
 
@@ -209,10 +226,19 @@ public class GameControllerPanel extends JPanel implements GameListener {
         startTimerWithRemainingTime(timer.getRemainingTime());
     }
 
+    /**
+     * Method to load the game state from a provided list of GameState objects.
+     * This method clones the provided list and assigns it to the gameState variable.
+     *
+     * @param loadState An ArrayList of GameState objects to be loaded into the game.
+     */
     public void loadSnapInfo(ArrayList<GameState> loadState){
         gameState = (ArrayList<GameState>) loadState.clone();
     }
 
+    /**
+     * Method to capture the current state of the board and save it to the gameState list for saving game.
+     */
     public void boardSnap(){
         gameState.add(game.saveState(timer.getRemainingTime(), vsComputer));
 
@@ -224,14 +250,24 @@ public class GameControllerPanel extends JPanel implements GameListener {
         }
     }
 
+    /**
+     * Method to start the game timer with the specified remaining time from a save file.
+     *
+     * @param remainingTime The remaining time in milliseconds.
+     */
     public void startTimerWithRemainingTime(long remainingTime) {
         timer = new CountdownTimer((int) (remainingTime / 1000 / 60));
         timer.setRemainingTime(remainingTime);
         timer.setOnTimerEnd(this::onTimerEnd);
+
         timer.setOnTick(() -> SwingUtilities.invokeLater(() -> timerLabel.setText(timer.getTimeString())));
         timer.start();
     }
 
+    /**
+     * Method to handle the end of the timer. It captures the board state, resets color of tiles,
+     * increments the game phase, and gives a turn to another player.
+     */
     private void onTimerEnd(){
         boardSnap();
         boardPanel.resetSquaresColors();
@@ -241,19 +277,28 @@ public class GameControllerPanel extends JPanel implements GameListener {
         setTurnFormatting();
     }
 
+    /**
+     * Method to start the game timer with the specified duration in minutes.
+     *
+     * @param minutes The duration of timer in minutes.
+     */
     private void startTimer(int minutes) {
         if (timer != null) {
             timer.stopAndLogTime();
         }
-        timer = new CountdownTimer(minutes); // Convert minutes to seconds
+        timer = new CountdownTimer(minutes);
         timer.setOnTimerEnd(this::onTimerEnd);
         timer.setOnTick(() -> SwingUtilities.invokeLater(() -> timerLabel.setText(timer.getTimeString())));
         timer.start();
     }
 
+    /**
+     * Implements onMovesLeft fired after each move (hides push/pull if not enough moves left)
+     * Makes a snapshot of a board for save file on every change of amount of turns.
+     * @param movesLeft Number of moves left in the current turn.
+     */
     @Override
     public void onMovesLeftChanged(int movesLeft) {
-        boardSnap();
         if(movesLeft > 0){
             if (movesLeft < 2){
                 if (pushButton.isSelected() || pullButton.isSelected()){
@@ -273,8 +318,13 @@ public class GameControllerPanel extends JPanel implements GameListener {
             game.incrementPhase();
             setTurnFormatting();
         }
+        boardSnap();
     }
 
+    /**
+     * Implements the onGameEnded by hiding game controls and displaying the winner.
+     * @param winner The winner player of the game.
+     */
     @Override
     public void onGameEnded(Player winner) {
         boardSnap();
@@ -294,6 +344,10 @@ public class GameControllerPanel extends JPanel implements GameListener {
         showWinnerPopup(winner);
     }
 
+    /**
+     * Method to set the turn formatting, including updating the background color and visibility of controls based on the current phase and game mode.
+     * Starts timer for each new turn and changes theme for every player new turn.
+     */
     private void setTurnFormatting(){
         Color turnColor;
         if (game.getPhase() % 2 == 1){
@@ -348,6 +402,12 @@ public class GameControllerPanel extends JPanel implements GameListener {
         }
 
     }
+
+    /**
+     * Method to handle the case when noneButton is selected during the computer's turn (means computer did not make any turn yet).
+     *Checks if any figure can make complex move, otherwise make a random step.
+     * @param complexMove A boolean indicating whether the move is complex (requires multiple steps).
+     */
     private void compNoneSelect(boolean complexMove) {
         boolean canPull = !game.getBoard().canPullPositions(game.getCurrentPlayer(), game.getEnemyPlayer()).isEmpty();
         boolean canPush = !game.getBoard().canPullPositions(game.getCurrentPlayer(), game.getEnemyPlayer()).isEmpty();
@@ -365,6 +425,9 @@ public class GameControllerPanel extends JPanel implements GameListener {
         }
     }
 
+    /**
+     * Method to handle the computer's tile selection for move.
+     */
     private void compMoveSelect() {
         int whiteSquares = boardPanel.getPositionsOfSquaresWithColor(Color.WHITE).size();
 
@@ -375,11 +438,25 @@ public class GameControllerPanel extends JPanel implements GameListener {
             finishButton.doClick();
         }
     }
+
+    /**
+     * Shows the winner popup with the name of the player who won.
+     * @param winner The winner.
+     */
     public void showWinnerPopup(Player winner) {
         String message = winner.getPlayerName() + " won!";
         JOptionPane.showMessageDialog(this, message, "Game Over", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Method to create a colored label with specified text, color, font size, and boldness.
+     *
+     * @param text The text to display on the label.
+     * @param color The color of the text.
+     * @param fontSize The size of the font.
+     * @param bold Whether the font should be bold.
+     * @return A JLabel with the specified properties.
+     */
     private JLabel createColoredLabel(String text, Color color, int fontSize, boolean bold) {
         JLabel label = new JLabel(text);
         label.setForeground(color);
@@ -387,6 +464,12 @@ public class GameControllerPanel extends JPanel implements GameListener {
         return label;
     }
 
+    /**
+     * Method to create a JPanel with a specified background color.
+     *
+     * @param color The background color of the panel.
+     * @return A JPanel with the specified background color.
+     */
     private JPanel createGroupPanel(Color color) {
         JPanel panel = new JPanel();
         panel.setBackground(color);

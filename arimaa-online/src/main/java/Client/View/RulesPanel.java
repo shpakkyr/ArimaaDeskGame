@@ -6,9 +6,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+/**
+ * RulesPanel displays the rules of the game and credits.
+ */
 public class RulesPanel extends JPanel {
-    private GameModel game;
-    private GameView view;
     private final static String RULES = """
             # Object of the Game
             Be the first to get one of your rabbits to the other side of the board.
@@ -51,15 +52,21 @@ public class RulesPanel extends JPanel {
             Devs: shpakkyr and vasiaboh
             """;
 
+    /**
+     * Constructs a new RulesPanel with the specified game model and view.
+     *
+     * @param game The game model.
+     * @param view The game view.
+     */
     public RulesPanel(GameModel game, GameView view) {
-        this.view = view;
-        this.game = game;
         setLayout(new BorderLayout());
 
+        // Header label
         JLabel rulesLabel = new JLabel("Rules and Devs", SwingConstants.CENTER);
         rulesLabel.setFont(new Font("Arial", Font.BOLD, 24));
         add(rulesLabel, BorderLayout.NORTH);
 
+        // Rules text area within a scroll pane
         JTextArea rulesText = new JTextArea(RULES);
         rulesText.setLineWrap(true);
         rulesText.setWrapStyleWord(true);
@@ -67,12 +74,14 @@ public class RulesPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(rulesText);
         add(scrollPane, BorderLayout.CENTER);
 
+        // Button panel with return button
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton returnButton = new JButton("Return");
         returnButton.setPreferredSize(new Dimension(100, 30)); // Sets the preferred size of the button
         buttonPanel.add(returnButton); // Adds the button to the panel
         add(buttonPanel, BorderLayout.SOUTH);
 
+        // Action listener for return button
         returnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
