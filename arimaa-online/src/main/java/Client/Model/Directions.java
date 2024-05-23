@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum Directions {
-    NORTH(1, 0),
-    SOUTH(-1, 0),
+    NORTH(-1, 0),
+    SOUTH(1, 0),
     LEFT(0, -1),
     RIGHT(0, 1);
 

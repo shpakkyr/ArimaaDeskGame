@@ -34,9 +34,9 @@ public abstract class Move implements MoveDirections{
         int columnDiff = to.getColumn() - from.getColumn();
 
         if (rowDiff == 1 && columnDiff == 0) {
-            return Directions.SOUTH;
-        } else if (rowDiff == -1 && columnDiff == 0) {
             return Directions.NORTH;
+        } else if (rowDiff == -1 && columnDiff == 0) {
+            return Directions.SOUTH;
         } else if (rowDiff == 0 && columnDiff == 1) {
             return Directions.RIGHT;
         } else if (rowDiff == 0 && columnDiff == -1) {

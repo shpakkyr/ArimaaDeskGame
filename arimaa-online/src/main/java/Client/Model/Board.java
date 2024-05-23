@@ -16,11 +16,7 @@ import static Client.Model.TroopType.toNotation;
 
 public class Board implements Serializable {
     public static final int DIMENSION = 8;
-    public static final int SQUARE_SIZE = 100;
-    public static final int HALF_SQUARE_SIZE = SQUARE_SIZE/2;
     private final Tile[][] board;
-    private ArrayList<Troop> troopList;
-
     public Board() {
         board = new Tile[DIMENSION][DIMENSION];
     }
@@ -56,10 +52,6 @@ public class Board implements Serializable {
         return getTroopAt(offset2D) == null;
     }
 
-    public boolean isValidOffset(Offset2D offset2D) {
-        return offset2D.getRow() >= 0 && offset2D.getRow() < DIMENSION && offset2D.getColumn() >= 0 && offset2D.getColumn() < DIMENSION;
-    }
-
     public void makeStepMove(StepMove move) {
         Offset2D from = move.getFrom();
         Offset2D to = move.getTo();
@@ -69,20 +61,6 @@ public class Board implements Serializable {
         removePlayer(from);
         placeTroop(troop, to);
         placePlayerOnTile(player, to);
-    }
-
-    public void makePullMove(PullMove move) {
-        makeStepMove(new StepMove(move.getFrom(), move.getTo()));
-        makeStepMove(new StepMove(move.getPulledPieceFrom(), move.getPulledPieceTo()));
-    }
-
-    public void makePushMove(PushMove move) {
-        makeStepMove(new StepMove(move.getFrom(), move.getTo()));
-        makeStepMove(new StepMove(move.getPushedPieceFrom(), move.getPushedPieceTo()));
-    }
-
-    public Troop[][] emptyBoard() {
-        return new Troop[DIMENSION][DIMENSION];
     }
 
     public boolean isWinner(Player player, Player enemy) {
@@ -155,7 +133,7 @@ public class Board implements Serializable {
         return false;
     }
 
-    public ArrayList<Offset2D> getStrongerEnemiesPositions(Offset2D offset2D, Player playerThatPulls) {
+    public ArrayList<Offset2D> getStrongerEnemiesPositions(Offset2D offset2D) {
         ArrayList<Offset2D> enemyPositions = new ArrayList<>();
         Troop troop = getTroopAt(offset2D);
         Player player = getPlayerAt(offset2D);
@@ -173,19 +151,6 @@ public class Board implements Serializable {
             }
         }
         return enemyPositions;
-    }
-
-    public boolean isEnemyTroopAround(Offset2D offset2D) {
-        Troop troop = getTroopAt(offset2D);
-        Player player = getPlayerAt(offset2D);
-        for (Directions direction : Directions.values()) {
-            int newRaw = offset2D.getRow() + direction.getRow();
-            int newColumn = offset2D.getColumn() + direction.getColumn();
-            Offset2D newOffset2d = new Offset2D(newRaw, newColumn);
-            if (getTroopAt(newOffset2d) != null && getPlayerAt(newOffset2d) != player)
-                return true;
-        }
-        return false;
     }
 
     public boolean isStrongerEnemyNearby(Offset2D offset2D) {
@@ -239,10 +204,6 @@ public class Board implements Serializable {
             int newRow = offset2D.getRow()+direction.getRow();
             int newCol = offset2D.getColumn()+direction.getColumn();
             Offset2D newPos = new Offset2D(newRow, newCol);
-            if (!isPositionOutOfBound(newPos)) {
-                Troop troop = getTroopAt(newPos);
-                Player player = getPlayerAt(newPos);
-            }
             if (!isPositionOutOfBound(newPos) && getTileAt(newPos).getTroop() == null && getTileAt(newPos).getPlayer() == null)
                     positionsToStep.add(newPos);
         }
@@ -253,8 +214,8 @@ public class Board implements Serializable {
         return !positionsTroopCanStepOn(offset2D).isEmpty();
     }
 
-    private boolean canPullPosition(Offset2D offset2D, Player player) {
-        return !getStrongerEnemiesPositions(offset2D, player).isEmpty();
+    private boolean canPullPosition(Offset2D offset2D) {
+        return !getStrongerEnemiesPositions(offset2D).isEmpty();
     }
 
     public ArrayList<Offset2D> canStepPositions(Player player) {
@@ -268,12 +229,12 @@ public class Board implements Serializable {
         return positionsOfTroop;
     }
 
-    public ArrayList<Offset2D> canPullPositions(Player player, Player enemy) {
+    public ArrayList<Offset2D> canPullPositions(Player enemy) {
         ArrayList<Offset2D> positionsOfEnemyTroops = getPlayersTroopsPositions(enemy);
         ArrayList<Offset2D> positionsOfEnemyTroopsToBePulled = new ArrayList<>();
 
         for (Offset2D offset2D : positionsOfEnemyTroops) {
-            if (canPullPosition(offset2D, player))
+            if (canPullPosition(offset2D))
                 positionsOfEnemyTroopsToBePulled.add(offset2D);
         }
         return positionsOfEnemyTroopsToBePulled;
@@ -362,19 +323,11 @@ public class Board implements Serializable {
         } else if (gameMode.equals("STEP")) {
             return canStepPositions(player);
         } else if (gameMode.equals("PULL")) {
-            return canPullPositions(player, enemy);
+            return canPullPositions(enemy);
         } else if (gameMode.equals("PUSH")) {
-            return canPullPositions(player, enemy);
+            return canPullPositions(enemy);
         }
         return null;
-    }
-
-    public ArrayList<Troop> getTroopList() {
-        return troopList;
-    }
-
-    public Tile[][] getBoard() {
-        return board;
     }
 
     public void populateBoardFrom2DString(String[][] board2DString, Player player1, Player player2){

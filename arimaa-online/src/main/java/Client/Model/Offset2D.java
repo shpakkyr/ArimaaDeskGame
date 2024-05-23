@@ -2,6 +2,8 @@ package Client.Model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 
 public class Offset2D {
     private int row;
@@ -71,14 +73,6 @@ public class Offset2D {
         return positionsAround;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Offset2D offset2D = (Offset2D) obj;
-        return row == offset2D.row && column == offset2D.column;
-    }
-
     public Offset2D getAdjacentPosition(Directions direction) {
         int newRow = this.row + direction.getRow();
         int newColumn = this.column + direction.getColumn();
@@ -101,5 +95,16 @@ public class Offset2D {
         return positionsArrayList;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Offset2D offset2D = (Offset2D) obj;
+        return row == offset2D.row && column == offset2D.column;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(row, column);
+    }
 }

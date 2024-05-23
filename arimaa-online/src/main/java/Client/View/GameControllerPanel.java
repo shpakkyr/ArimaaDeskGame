@@ -409,8 +409,8 @@ public class GameControllerPanel extends JPanel implements GameListener {
      * @param complexMove A boolean indicating whether the move is complex (requires multiple steps).
      */
     private void compNoneSelect(boolean complexMove) {
-        boolean canPull = !game.getBoard().canPullPositions(game.getCurrentPlayer(), game.getEnemyPlayer()).isEmpty();
-        boolean canPush = !game.getBoard().canPullPositions(game.getCurrentPlayer(), game.getEnemyPlayer()).isEmpty();
+        boolean canPull = !game.getBoard().canPullPositions(game.getEnemyPlayer()).isEmpty();
+        boolean canPush = !game.getBoard().canPullPositions(game.getEnemyPlayer()).isEmpty();
 
         if (complexMove) {
             if (canPush) {

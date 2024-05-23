@@ -35,9 +35,9 @@ public class Tile {
     public ArrayList<Directions> troopValidDirections() {
         ArrayList<Directions> troopDirections =  new ArrayList<>(List.of(Directions.NORTH, Directions.SOUTH, Directions.LEFT, Directions.RIGHT));
         if(player.getPlayingSide() == PlayingSide.GOLD && troop.getType() == TroopType.RABBIT) {
-            troopDirections.remove(Directions.NORTH);
-        } else if (player.getPlayingSide() == PlayingSide.SILVER && troop.getType() == TroopType.RABBIT) {
             troopDirections.remove(Directions.SOUTH);
+        } else if (player.getPlayingSide() == PlayingSide.SILVER && troop.getType() == TroopType.RABBIT) {
+            troopDirections.remove(Directions.NORTH);
         }
         return troopDirections;
     }
