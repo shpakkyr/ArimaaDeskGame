@@ -79,7 +79,7 @@ public class BoardPanel extends JPanel {
     private void fillSquaresWithImage(Tile tile, JPanel square) {
         square.removeAll();
         if (tile.getTroop() != null && tile.getPlayer() != null) {
-            String troopName = tile.getTroop().getType().getName();
+            String troopName = tile.getTroop().type().getName();
             char playerSide = tile.getPlayer().getPlayingSideString().charAt(0);
             String troopPath = playerSide + "-" + troopName;
             ImageIcon imageIcon = loadImageIcon("icons/" + troopPath + ".png");

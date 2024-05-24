@@ -2,6 +2,10 @@ package Client.Model;
 
 import java.io.Serializable;
 
+/**
+ * Represents the state of the game at a particular point in time.
+ * Implements Serializable to allow the game state to be saved and loaded.
+ */
 public class GameState implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -17,7 +21,21 @@ public class GameState implements Serializable {
     public final long remainingTime;
     public final boolean vsComputer;
 
-
+    /**
+     * Constructs a GameState object with the specified parameters.
+     *
+     * @param player1       The first player.
+     * @param player2       The second player.
+     * @param currentPlayer The current player.
+     * @param enemyPlayer   The enemy player.
+     * @param winner        The player who won the game.
+     * @param phase         The current phase of the game.
+     * @param movesLeft     The number of moves left.
+     * @param isGameFinished Whether the game is finished.
+     * @param boardState    The current state of the board.
+     * @param remainingTime The remaining time for the game.
+     * @param vsComputer    Whether the game is against the computer.
+     */
     public GameState(Player player1, Player player2, Player currentPlayer, Player enemyPlayer, Player winner, int phase, int movesLeft, boolean isGameFinished, String[][] boardState, long remainingTime, boolean vsComputer) {
         this.player1 = player1;
         this.player2 = player2;

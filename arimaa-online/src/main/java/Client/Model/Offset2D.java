@@ -4,11 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
+/**
+ * Represents a 2D offset or position on the board.
+ */
 public class Offset2D {
     private int row;
     private int column;
 
+    /**
+     * Constructs an Offset2D object with the specified row and column.
+     *
+     * @param row The row of the offset.
+     * @param column The column of the offset.
+     */
     public Offset2D(int row, int column) {
         this.row = row;
         this.column = column;
@@ -22,6 +30,9 @@ public class Offset2D {
         return column;
     }
 
+    /**
+     * List of predefined trap offsets on the board.
+     */
     public static final ArrayList<Offset2D> TRAP_OFFSET = new ArrayList<>(
             List.of(
                     new Offset2D(2, 2),
@@ -31,6 +42,9 @@ public class Offset2D {
             )
     );
 
+    /**
+     * List of predefined silver winning condition offsets on the board.
+     */
     public static final ArrayList<Offset2D> SILVER_WINNING_CONDITION = new ArrayList<>(
             List.of(
                     new Offset2D(7, 0),
@@ -44,6 +58,9 @@ public class Offset2D {
             )
     );
 
+    /**
+     * List of predefined gold winning condition offsets on the board.
+     */
     public static final ArrayList<Offset2D> GOLD_WINNING_CONDITION = new ArrayList<>(
             List.of(
                     new Offset2D(0, 0),
@@ -57,6 +74,12 @@ public class Offset2D {
             )
     );
 
+    /**
+     * Gets the positions around the specified offset.
+     *
+     * @param offset2D The offset to get positions around.
+     * @return A list of positions around the specified offset.
+     */
     public static ArrayList<Offset2D> positionsAround(Offset2D offset2D) {
         ArrayList<Offset2D> positionsAround = new ArrayList<>();
 
@@ -73,6 +96,12 @@ public class Offset2D {
         return positionsAround;
     }
 
+    /**
+     * Gets the adjacent position in the specified direction.
+     *
+     * @param direction The direction to get the adjacent position.
+     * @return The adjacent position, or null if out of bounds.
+     */
     public Offset2D getAdjacentPosition(Directions direction) {
         int newRow = this.row + direction.getRow();
         int newColumn = this.column + direction.getColumn();
@@ -84,6 +113,12 @@ public class Offset2D {
         return null;
     }
 
+    /**
+     * Gets the adjacent positions in the specified directions.
+     *
+     * @param directionArrayList The list of directions to get adjacent positions.
+     * @return A list of adjacent positions.
+     */
     public ArrayList<Offset2D> getAdjacentPositions(ArrayList<Directions> directionArrayList) {
         ArrayList<Offset2D> positionsArrayList = new ArrayList<>();
         for (Directions direction : directionArrayList) {
@@ -95,6 +130,13 @@ public class Offset2D {
         return positionsArrayList;
     }
 
+    /**
+     * Compares this offset to the specified object. The result is true if and only if the argument is not null
+     * and is an Offset2D object that represents the same row and column as this object.
+     *
+     * @param obj The object to compare this Offset2D against.
+     * @return true if the given object represents an Offset2D equivalent to this offset, false otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -103,6 +145,11 @@ public class Offset2D {
         return row == offset2D.row && column == offset2D.column;
     }
 
+    /**
+     * Returns a hash code value for this offset.
+     *
+     * @return A hash code value for this object.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(row, column);
