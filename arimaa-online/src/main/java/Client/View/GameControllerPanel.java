@@ -2,11 +2,13 @@ package Client.View;
 
 import Client.Controller.*;
 import Client.Model.*;
+import Server.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -32,19 +34,39 @@ public class GameControllerPanel extends JPanel implements GameListener {
     private CountdownTimer timer;
     private final boolean vsComputer;
     private final JLabel timerLabel;
-    public GameControllerPanel(GameModel game, BoardPanel boardPanel, boolean vsComputer) {
+    private final int playerId;
+    private Client client;
+
+    public GameControllerPanel(GameModel game, BoardPanel boardPanel, boolean vsComputer, int playerId) {
         this.game = game;
         this.boardPanel = boardPanel;
         this.vsComputer = vsComputer;
+        this.playerId = playerId;
         setLayout(new BorderLayout());
         setBorder(new EmptyBorder(0, 0, 0, 0));
+        JPanel player1infoGroup;
+        JPanel player2infoGroup;
 
         // NORTH - player 2 info
-        JLabel playerTopName = createColoredLabel("Silver Player (" + game.getPlayer2().getPlayerName() + ")", Color.LIGHT_GRAY, 14, false);
-        JPanel player2infoGroup = createGroupPanel(Color.BLACK);
-        player2infoGroup.add(Box.createRigidArea(new Dimension(0, 7)));
-        player2infoGroup.add(playerTopName);
-        player2infoGroup.add(Box.createRigidArea(new Dimension(0, 5)));
+        if (playerId == 1) {
+            JLabel playerTopName = createColoredLabel("Silver Player (" + game.getPlayer2().getPlayerName() + ")", Color.LIGHT_GRAY, 14, false);
+            player2infoGroup = createGroupPanel(Color.BLACK);
+            player2infoGroup.add(Box.createRigidArea(new Dimension(0, 7)));
+            player2infoGroup.add(playerTopName);
+            player2infoGroup.add(Box.createRigidArea(new Dimension(0, 5)));
+        } else if (playerId == 2){
+            JLabel playerTopName = createColoredLabel("Gold Player (" + game.getPlayer2().getPlayerName() + ")", Color.ORANGE, 14, false);
+            player2infoGroup = createGroupPanel(Color.BLACK);
+            player2infoGroup.add(Box.createRigidArea(new Dimension(0, 7)));
+            player2infoGroup.add(playerTopName);
+            player2infoGroup.add(Box.createRigidArea(new Dimension(0, 5)));
+        } else {
+            JLabel playerTopName = createColoredLabel("Silver Player (" + game.getPlayer2().getPlayerName() + ")", Color.LIGHT_GRAY, 14, false);
+            player2infoGroup = createGroupPanel(Color.BLACK);
+            player2infoGroup.add(Box.createRigidArea(new Dimension(0, 7)));
+            player2infoGroup.add(playerTopName);
+            player2infoGroup.add(Box.createRigidArea(new Dimension(0, 5)));
+        }
 
         //CENTER - timer, turn info and controll buttons
         turnIndicator = new JLabel("Gold Player's Turn");
@@ -133,11 +155,25 @@ public class GameControllerPanel extends JPanel implements GameListener {
         gameControllerPanel.add(Box.createVerticalGlue());
 
         //SOUTH - player 1 info
-        JLabel playerBottomName = createColoredLabel("Gold Player (" + game.getPlayer1().getPlayerName() + ")", Color.ORANGE, 14, false);
-        JPanel player1infoGroup = createGroupPanel(Color.BLACK);
-        player1infoGroup.add(playerBottomName);
-        player1infoGroup.add(Box.createRigidArea(new Dimension(0, 5)));
-        player1infoGroup.add(Box.createRigidArea(new Dimension(0, 27)));
+        if (playerId == 1) {
+            JLabel playerBottomName = createColoredLabel("Gold Player (" + game.getPlayer1().getPlayerName() + ")", Color.ORANGE, 14, false);
+            player1infoGroup = createGroupPanel(Color.BLACK);
+            player1infoGroup.add(playerBottomName);
+            player1infoGroup.add(Box.createRigidArea(new Dimension(0, 5)));
+            player1infoGroup.add(Box.createRigidArea(new Dimension(0, 27)));
+        } else if (playerId == 2){
+            JLabel playerBottomName = createColoredLabel("Silver Player (" + game.getPlayer1().getPlayerName() + ")", Color.LIGHT_GRAY, 14, false);
+            player1infoGroup = createGroupPanel(Color.BLACK);
+            player1infoGroup.add(playerBottomName);
+            player1infoGroup.add(Box.createRigidArea(new Dimension(0, 5)));
+            player1infoGroup.add(Box.createRigidArea(new Dimension(0, 27)));
+        } else {
+            JLabel playerBottomName = createColoredLabel("Gold Player (" + game.getPlayer1().getPlayerName() + ")", Color.ORANGE, 14, false);
+            player1infoGroup = createGroupPanel(Color.BLACK);
+            player1infoGroup.add(playerBottomName);
+            player1infoGroup.add(Box.createRigidArea(new Dimension(0, 5)));
+            player1infoGroup.add(Box.createRigidArea(new Dimension(0, 27)));
+        }
 
         //General constructor
         add(player2infoGroup, BorderLayout.NORTH);
@@ -156,12 +192,20 @@ public class GameControllerPanel extends JPanel implements GameListener {
             if(firstTurnCheck > 1 && game.getMovesLeft() == 4) {
                 boardSnap();
             }
-
             boardPanel.resetSquaresColors();
             boardPanel.setGameMode(GameMode.NONE);
             boardPanel.handleModeReset();
             game.incrementPhase();
             setTurnFormatting();
+            if (client != null) {
+                disableButtons();
+                GameState gameState = game.saveState(timer.getRemainingTime(), vsComputer);
+                try {
+                    client.sendObjectToEnemy(gameState);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
         });
         switchButton.addActionListener(e -> {
             boardPanel.setGameMode(GameMode.SWITCH);
@@ -203,6 +247,22 @@ public class GameControllerPanel extends JPanel implements GameListener {
         });
 
         saveButton.addActionListener(e -> saveGame());
+    }
+
+    public void disableButtons() {
+        switchButton.setVisible(false);
+        noneButton.setVisible(false);
+        stepButton.setVisible(false);
+        pushButton.setVisible(false);
+        pullButton.setVisible(false);
+        finishButton.setVisible(false);
+        movesLeftLabel.setVisible(false);
+        saveButton.setVisible(false);
+        compButton.setVisible(false);
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     /**
@@ -317,6 +377,15 @@ public class GameControllerPanel extends JPanel implements GameListener {
             boardPanel.handleModeReset();
             game.incrementPhase();
             setTurnFormatting();
+            if (client != null) {
+                disableButtons();
+                GameState gameState = game.saveState(timer.getRemainingTime(), false);
+                try {
+                    client.sendObjectToEnemy(gameState);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
         }
         boardSnap();
     }
@@ -340,6 +409,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
         giveUpButton.setVisible(false);
         movesLeftLabel.setVisible(false);
         compButton.setVisible(false);
+        saveButton.setVisible(true);
         turnIndicator.setText(winner.getPlayerName() + " won!");
         showWinnerPopup(winner);
     }
@@ -348,7 +418,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
      * Method to set the turn formatting, including updating the background color and visibility of controls based on the current phase and game mode.
      * Starts timer for each new turn and changes theme for every player new turn.
      */
-    private void setTurnFormatting(){
+    public void setTurnFormatting(){
         Color turnColor;
         if (game.getPhase() % 2 == 1){
             turnColor = Color.ORANGE;
@@ -363,18 +433,21 @@ public class GameControllerPanel extends JPanel implements GameListener {
         gameControllerPanel.setBackground(turnColor);
 
         if (game.getPhase() <= 2){
-            movesLeftLabel.setText("Arrange your pieces");
-            switchButton.setVisible(true);
-            noneButton.setVisible(true);
-            stepButton.setVisible(false);
-            pushButton.setVisible(false);
-            pullButton.setVisible(false);
-            noneButton.setSelected(true);
-            finishButton.setVisible(true);
-            giveUpButton.setVisible(false);
-            saveButton.setVisible(false);
-            compButton.setVisible(false);
-
+            if (playerId == game.getPhase() || playerId == 0) {
+                movesLeftLabel.setText("Arrange your pieces");
+                switchButton.setVisible(true);
+                noneButton.setVisible(true);
+                stepButton.setVisible(false);
+                pushButton.setVisible(false);
+                pullButton.setVisible(false);
+                noneButton.setSelected(true);
+                finishButton.setVisible(true);
+                giveUpButton.setVisible(false);
+                saveButton.setVisible(false);
+            }
+            else {
+                disableButtons();
+            }
         } else {
             movesLeftLabel.setText("4 moves left");
             switchButton.setVisible(false);
@@ -385,7 +458,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
             noneButton.setSelected(true);
             finishButton.setVisible(true);
             giveUpButton.setVisible(true);
-            saveButton.setVisible(true);
+            saveButton.setVisible(playerId == 0);
             compButton.setVisible(false);
 
         }

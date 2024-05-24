@@ -1,6 +1,7 @@
 package Client.Model;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * Represents the state of the game at a particular point in time.
@@ -48,5 +49,22 @@ public class GameState implements Serializable {
         this.boardState = boardState;
         this.remainingTime = remainingTime;
         this.vsComputer = vsComputer;
+    }
+
+    @Override
+    public String toString() {
+        return "GameState{" +
+                "player1=" + player1 +
+                ", player2=" + player2 +
+                ", currentPlayer=" + currentPlayer +
+                ", enemyPlayer=" + enemyPlayer +
+                ", winner=" + winner +
+                ", phase=" + phase +
+                ", movesLeft=" + movesLeft +
+                ", isGameFinished=" + isGameFinished +
+                ", boardState=" + Arrays.toString(boardState) +
+                ", remainingTime=" + remainingTime +
+                ", vsComputer=" + vsComputer +
+                '}';
     }
 }

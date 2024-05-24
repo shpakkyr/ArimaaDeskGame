@@ -21,5 +21,4 @@ public record Troop(TroopType type) {
         TroopType pieceType = TroopType.fromNotation(pieceTypeString.toLowerCase().charAt(0));
         return new Troop(pieceType);
     }
-
 }

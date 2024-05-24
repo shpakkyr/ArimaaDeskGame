@@ -1,6 +1,8 @@
 package Client.Model;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import Server.*;
 
 /**
  * Represents the model for the game, containing the game logic and state.
@@ -16,6 +18,7 @@ public class GameModel {
     private boolean isGameFinished;
     private Board board;
     private GameListener gameListener;
+    private Client client;
 
     /**
      * Default board configuration for a new game.
@@ -29,6 +32,17 @@ public class GameModel {
             {"", "", "", "", "", "", "", ""},
             {"E", "M", "H", "H", "D", "D", "C", "C"},
             {"R", "R", "R", "R", "R", "R", "R", "R"}
+    };
+
+    public static final String[][] DEFAULT_BOARD_ROTATED = {
+            {"R", "R", "R", "R", "R", "R", "R", "R"},
+            {"C", "C", "D", "D", "H", "H", "M", "E"},
+            {"", "", "", "", "", "", "", ""},
+            {"", "", "", "", "", "", "", ""},
+            {"", "", "", "", "", "", "", ""},
+            {"", "", "", "", "", "", "", ""},
+            {"c", "c", "d", "d", "h", "h", "m", "e"},
+            {"r", "r", "r", "r", "r", "r", "r", "r"}
     };
 
     /**
@@ -82,6 +96,14 @@ public class GameModel {
     public void endGameGiveUp() {
         setWinner(getEnemyPlayer());
         isGameFinished = true;
+        if (client != null) {
+            GameState gameState = saveState(0, false);
+            try {
+                client.sendObjectToEnemy(gameState);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
         gameListener.onGameEnded(getEnemyPlayer());
     }
 
@@ -91,6 +113,10 @@ public class GameModel {
     public void incrementPhase() {
         phase++;
         switchTurn();
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public Board getBoard() {
@@ -121,6 +147,10 @@ public class GameModel {
         return movesLeft;
     }
 
+    public Player getWinner() {
+        return winner;
+    }
+
     /**
      * Checks if the game is finished.
      *
@@ -145,11 +175,29 @@ public class GameModel {
      * Checks if there is a winner and updates the game state accordingly.
      */
     public void checkWinning() {
-        boolean player1won = board.isWinner(player1, player2);
-        boolean player2won = board.isWinner(player2, player1);
+        boolean player1won = board.isWinner(player1, player2, 1);
+        boolean player2won = board.isWinner(player2, player1, 1);
         if (player1won || player2won) {
             winner = player1won ? player1 : player2;
             isGameFinished = true;
+            gameListener.onGameEnded(winner);
+        }
+    }
+
+    public void checkWinningOnline() {
+        boolean player1won = board.isWinner(player1, player2, getCurrentPlayer().getPlayerId());
+        boolean player2won = board.isWinner(player2, player1, getCurrentPlayer().getPlayerId());
+        if (player1won || player2won) {
+            winner = player1won ? player1 : player2;
+            isGameFinished = true;
+            if (client != null) {
+                GameState gameState = saveState(0, false);
+                try {
+                    client.sendObjectToEnemy(gameState);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
             gameListener.onGameEnded(winner);
         }
     }
@@ -179,6 +227,15 @@ public class GameModel {
         this.phase = gameState.getLast().phase;
         this.movesLeft = gameState.getLast().movesLeft;
         this.isGameFinished = gameState.getLast().isGameFinished;
+    }
+
+    public void updateGameState(GameState gameState) {
+        this.currentPlayer = gameState.currentPlayer;
+        this.enemyPlayer = gameState.enemyPlayer;
+        this.winner = gameState.winner;
+        this.phase = gameState.phase;
+        this.movesLeft = gameState.movesLeft;
+        this.isGameFinished = gameState.isGameFinished;
     }
 
     /**

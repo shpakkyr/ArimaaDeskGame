@@ -2,6 +2,7 @@ package Client.View;
 
 import Client.Controller.Loader;
 import Client.Model.*;
+import Server.Client;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +26,7 @@ public class GameView extends JPanel implements Runnable{
     static final int FPS = 60;
     Thread gameThread;
     private final Board board = new Board();
+    private Client client;
 
     /**
      * Constructor for GameView class.
@@ -72,11 +74,58 @@ public class GameView extends JPanel implements Runnable{
         boardPanel = new BoardPanel(game);
         boardPanel.setGame(game);
         changeCurrentPanel(boardPanel);
-        controlPanel = new GameControllerPanel(game, boardPanel, vsComputer);
+        controlPanel = new GameControllerPanel(game, boardPanel, vsComputer, 0);
         game.setGameListener(controlPanel);
         currentRightPanel = controlPanel;
         changeRightPanel(currentRightPanel);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    public void startOnlineGame(String player1name, String player2name, int playerId, int playerEnemyId, Client client) {
+        this.client = client;
+        Player player1 = new Player(playerId, player1name, false);
+        Player player2 = new Player(playerEnemyId, player2name, false);
+        game.setPlayers(player1, player2);
+        if (playerId == 1)
+            game.getBoard().populateBoardFrom2DString(GameModel.DEFAULT_BOARD, player1, player2);
+        else
+            game.getBoard().populateBoardFrom2DString(GameModel.DEFAULT_BOARD_ROTATED, player2, player1);
+        boardPanel = new BoardPanel(game);
+        boardPanel.setGame(game);
+        changeCurrentPanel(boardPanel);
+        controlPanel = new GameControllerPanel(game, boardPanel, false, playerId);
+        game.setClient(client);
+        controlPanel.setClient(client);
+        boardPanel.setClient(client);
+        game.setGameListener(controlPanel);
+        currentRightPanel = controlPanel;
+        changeRightPanel(currentRightPanel);
+    }
+
+    public void updateView(GameState gameState){
+        if (gameState.phase == game.getPhase() && !gameState.isGameFinished) {
+//            System.out.println("Before: " + gameState);
+//            game.updateGameState(gameState);
+//            System.out.println("After: " + "player 1: " + game.getPlayer1() + "player 2: " + game.getPlayer2() + "player current: " + game.getCurrentPlayer() + "player enemy: " + game.getEnemyPlayer() + game.getPhase());
+            game.getBoard().populateBoardFrom2DStringRotated(gameState.boardState, game.getPlayer1(), game.getPlayer2());
+            boardPanel.setGame(game);
+            changeCurrentPanel(boardPanel);
+            game.setGameListener(controlPanel);
+        }
+        else {
+//            System.out.println("Before: " + gameState);
+            game.updateGameState(gameState);
+//            System.out.println("After: " + "player 1: " + game.getPlayer1() + "player 2: " + game.getPlayer2() + "player current: " + game.getCurrentPlayer() + "player enemy: " + game.getEnemyPlayer() + game.getPhase());
+            game.getBoard().populateBoardFrom2DStringRotated(gameState.boardState, game.getPlayer1(), game.getPlayer2());
+            boardPanel.setGame(game);
+            changeCurrentPanel(boardPanel);
+            game.setGameListener(controlPanel);
+            if (game.isGameFinished()) {
+                controlPanel.onGameEnded(game.getWinner());
+            }
+            if (game.getPhase() > 1 && !game.isGameFinished())
+                controlPanel.setTurnFormatting();
+        }
     }
 
     /**
@@ -92,7 +141,7 @@ public class GameView extends JPanel implements Runnable{
         boardPanel = new BoardPanel(game);
         boardPanel.setGame(game);
         changeCurrentPanel(boardPanel);
-        controlPanel = new GameControllerPanel(game, boardPanel, gameState.getFirst().vsComputer);
+        controlPanel = new GameControllerPanel(game, boardPanel, gameState.getFirst().vsComputer, 0);
         game.setGameListener(controlPanel);
         currentRightPanel = controlPanel;
         changeRightPanel(currentRightPanel);

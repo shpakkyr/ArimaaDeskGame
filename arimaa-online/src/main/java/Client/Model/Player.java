@@ -71,4 +71,14 @@ public class Player implements Serializable {
                 isComputer == other.isComputer &&
                 playingSide == other.playingSide;
     }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "playerId=" + playerId +
+                ", playingSide=" + playingSide +
+                ", playerName='" + playerName + '\'' +
+                ", isComputer=" + isComputer +
+                '}';
+    }
 }

@@ -103,13 +103,19 @@ public class Board implements Serializable {
      * @param enemy The opposing player.
      * @return true if the player has won, false otherwise.
      */
-    public boolean isWinner(Player player, Player enemy) {
-        ArrayList<Offset2D> winningOffsets = player.getPlayingSide() == PlayingSide.GOLD ? Offset2D.GOLD_WINNING_CONDITION : Offset2D.SILVER_WINNING_CONDITION;
-        for (Offset2D winningOffset : winningOffsets) {
-            Troop troop = getTroopAt(winningOffset);
-            Player playerCheck = getPlayerAt(winningOffset);
-            if (troop != null && troop.type() == RABBIT && playerCheck == player)
-                return true;
+    public boolean isWinner(Player player, Player enemy, int playerId) {
+        ArrayList<Offset2D> winningOffsets = null;
+        if (playerId == 1)
+            winningOffsets = player.getPlayingSide() == PlayingSide.GOLD ? Offset2D.GOLD_WINNING_CONDITION : Offset2D.SILVER_WINNING_CONDITION;
+        else if (playerId == 2)
+            winningOffsets = player.getPlayingSide() == PlayingSide.GOLD ? Offset2D.SILVER_WINNING_CONDITION : Offset2D.GOLD_WINNING_CONDITION;
+        if (winningOffsets != null) {
+            for (Offset2D winningOffset : winningOffsets) {
+                Troop troop = getTroopAt(winningOffset);
+                Player playerCheck = getPlayerAt(winningOffset);
+                if (troop != null && troop.type() == RABBIT && playerCheck == player)
+                    return true;
+            }
         }
 
         ArrayList<Troop> enemyTroops = getPlayersTroops(enemy);
@@ -122,7 +128,14 @@ public class Board implements Serializable {
                 return true;
             }
         }
-        return true;
+
+        int enemyPositionsAmount = getPlayersTroopsPositions(enemy).size();
+        int enemyFrozenPositions = 0;
+        for (Offset2D offset2D : getPlayersTroopsPositions(enemy)){
+            if (isTroopFrozen(offset2D))
+                enemyFrozenPositions++;
+        }
+        return enemyPositionsAmount == enemyFrozenPositions;
     }
 
     /**
@@ -294,8 +307,8 @@ public class Board implements Serializable {
      * @param offset2D The starting position of the troop.
      * @return A list of positions the troop can step on.
      */
-    public ArrayList<Offset2D> positionsTroopCanStepOn(Offset2D offset2D) {
-        ArrayList<Directions> directions = getTileAt(offset2D).troopValidDirections();
+    public ArrayList<Offset2D> positionsTroopCanStepOn(Offset2D offset2D, boolean isSilverBottom) {
+        ArrayList<Directions> directions = getTileAt(offset2D).troopValidDirections(isSilverBottom);
         ArrayList<Offset2D> positionsToStep = new ArrayList<>();
         if (isTroopFrozen(offset2D))
             return positionsToStep;
@@ -316,8 +329,8 @@ public class Board implements Serializable {
      * @param offset2D The position to check.
      * @return True if the position can step, otherwise false.
      */
-    private boolean canStepPosition(Offset2D offset2D) {
-        return !positionsTroopCanStepOn(offset2D).isEmpty();
+    private boolean canStepPosition(Offset2D offset2D, boolean isSilverBottom) {
+        return !positionsTroopCanStepOn(offset2D, isSilverBottom).isEmpty();
     }
 
     /**
@@ -336,11 +349,12 @@ public class Board implements Serializable {
      * @param player The player whose troop positions are to be retrieved.
      * @return A list of positions of the player's troops that can step.
      */
-    public ArrayList<Offset2D> canStepPositions(Player player) {
+    public ArrayList<Offset2D> canStepPositions(Player player, boolean isSilverBottom) {
         ArrayList<Offset2D> positionsOfTroop = new ArrayList<>();
+        ArrayList<Offset2D> pos = getPlayersTroopsPositions(player);
 
         for (Offset2D position : getPlayersTroopsPositions(player)) {
-            if (canStepPosition(position)) {
+            if (canStepPosition(position, isSilverBottom)) {
                 positionsOfTroop.add(position);
             }
         }
@@ -370,10 +384,10 @@ public class Board implements Serializable {
      * @param position The position to check.
      * @return A list of valid step moves.
      */
-    public ArrayList<StepMove> getValidStepMovesByItselfForPosition(Offset2D position){
+    public ArrayList<StepMove> getValidStepMovesByItselfForPosition(Offset2D position, boolean isSilverBottom){
         ArrayList<StepMove> stepMoveArrayList = new ArrayList<>();
         Tile tile = getTileAt(position);
-        ArrayList<Directions> directionsArrayList = tile.troopValidDirections();
+        ArrayList<Directions> directionsArrayList = tile.troopValidDirections(isSilverBottom);
         if (isTroopFrozen(position)) return new ArrayList<>();
         for (Offset2D onePosition : position.getAdjacentPositions(directionsArrayList)){
             if(isPositionEmpty(onePosition)){
@@ -409,9 +423,9 @@ public class Board implements Serializable {
      * @param pulledPiecePosition The position of the pulled piece.
      * @return A list of valid pull moves.
      */
-    public ArrayList<ComplexMove> getValidPullMovesForPullerAndPulled(Offset2D pullingPiecePosition, Offset2D pulledPiecePosition){
+    public ArrayList<ComplexMove> getValidPullMovesForPullerAndPulled(Offset2D pullingPiecePosition, Offset2D pulledPiecePosition, boolean isSilverBottom){
         ArrayList<ComplexMove> pullMoveArrayList = new ArrayList<>();
-        for (StepMove pullerStepMove : getValidStepMovesByItselfForPosition(pullingPiecePosition)){
+        for (StepMove pullerStepMove : getValidStepMovesByItselfForPosition(pullingPiecePosition, isSilverBottom)){
             pullMoveArrayList.add(new ComplexMove(
                     pullerStepMove.getFrom(),
                     pullerStepMove.getTo(),
@@ -438,10 +452,10 @@ public class Board implements Serializable {
      * @param pulledPiecePosition The position to check.
      * @return A list of positions of possible pulling pieces.
      */
-    public ArrayList<Offset2D> getPositionsOfPossiblePullingPieces(Offset2D pulledPiecePosition){
+    public ArrayList<Offset2D> getPositionsOfPossiblePullingPieces(Offset2D pulledPiecePosition, boolean isSilverBottom){
         ArrayList<Offset2D> pullingPieces = new ArrayList<>();
         for (Offset2D pullingPiecePosition : getStrongerEnemiesPositionsAround(pulledPiecePosition)){
-            if (canStepPosition(pullingPiecePosition))
+            if (canStepPosition(pullingPiecePosition, isSilverBottom))
                 pullingPieces.add(pullingPiecePosition);
         }
         return pullingPieces;
@@ -493,11 +507,11 @@ public class Board implements Serializable {
      * @param gameMode The game mode ("SWITCH", "STEP", "PULL", "PUSH").
      * @return A list of positions of the player's troops.
      */
-    public ArrayList<Offset2D> getPositionsOfPlayersTroops(Player player, Player enemy, String gameMode) {
+    public ArrayList<Offset2D> getPositionsOfPlayersTroops(Player player, Player enemy, String gameMode, boolean isSilverBottom) {
         if (gameMode.equals("SWITCH")) {
             return getPlayersTroopsPositions(player);
         } else if (gameMode.equals("STEP")) {
-            return canStepPositions(player);
+            return canStepPositions(player, isSilverBottom);
         } else if (gameMode.equals("PULL")) {
             return canPullPositions(enemy);
         } else if (gameMode.equals("PUSH")) {
@@ -523,6 +537,29 @@ public class Board implements Serializable {
                     continue;
                 };
                 Player player = Character.isUpperCase(stringPiece.charAt(0)) ? player1 : player2;
+                Troop piece = Troop.createPieceFromNotationPlayerWithSpecificPlayer(stringPiece);
+                placeTroop(piece, position);
+                placePlayerOnTile(player, position);
+            }
+        }
+    }
+
+    public void populateBoardFrom2DStringRotated(String[][] board2DString, Player player1, Player player2){
+        for (int i = 0; i < DIMENSION; i++){
+            for (int j = 0; j < DIMENSION; j++){
+                Offset2D position = new Offset2D(7 - i, 7 - j);
+                String stringPiece = board2DString[i][j];
+                if (Objects.equals(stringPiece, "")){
+                    placeTroop(null, position);
+                    continue;
+                };
+//                Player player = Character.isUpperCase(stringPiece.charAt(0)) ? player1 : player2;
+                Player player = null;
+                if (Character.isUpperCase(stringPiece.charAt(0))) {
+                    player = player1.getPlayingSide() == PlayingSide.GOLD ? player1 : player2;
+                } else {
+                    player = player1.getPlayingSide() == PlayingSide.SILVER ? player1 : player2;
+                }
                 Troop piece = Troop.createPieceFromNotationPlayerWithSpecificPlayer(stringPiece);
                 placeTroop(piece, position);
                 placePlayerOnTile(player, position);

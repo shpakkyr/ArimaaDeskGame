@@ -40,13 +40,14 @@ public class Tile {
      *
      * @return A list of valid directions for the troop.
      */
-    public ArrayList<Directions> troopValidDirections() {
+    public ArrayList<Directions> troopValidDirections(boolean isSilverBottom) {
         ArrayList<Directions> troopDirections =  new ArrayList<>(List.of(Directions.NORTH, Directions.SOUTH, Directions.LEFT, Directions.RIGHT));
-        if(player.getPlayingSide() == PlayingSide.GOLD && troop.type() == TroopType.RABBIT) {
+        if(player.getPlayingSide() == PlayingSide.GOLD && troop.type() == TroopType.RABBIT && !isSilverBottom) {
             troopDirections.remove(Directions.SOUTH);
-        } else if (player.getPlayingSide() == PlayingSide.SILVER && troop.type() == TroopType.RABBIT) {
+        } else if (player.getPlayingSide() == PlayingSide.SILVER && troop.type() == TroopType.RABBIT && !isSilverBottom) {
             troopDirections.remove(Directions.NORTH);
-        }
+        } else if (player.getPlayingSide() == PlayingSide.SILVER && troop.type() == TroopType.RABBIT && isSilverBottom)
+            troopDirections.remove(Directions.SOUTH);
         return troopDirections;
     }
 }

@@ -1,6 +1,7 @@
 package Client.View;
 
 import Client.Model.*;
+import Server.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -22,6 +23,7 @@ public class BoardPanel extends JPanel {
     private GameModel game;
     private GameMode currentMode = GameMode.NONE;
     private final JPanel[][] tiles;
+    private Client client;
 
     /**
      * Constructs a BoardPanel with the specified game model.
@@ -55,6 +57,10 @@ public class BoardPanel extends JPanel {
         this.game = game;
         fillSquares();
         resetSquaresColors();
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     /**
@@ -222,15 +228,16 @@ public class BoardPanel extends JPanel {
      */
     public void handleModeReset() {
         resetSquaresColors();
+        boolean isSilverBottom = client != null && game.getCurrentPlayer().getPlayerId() == 2;
         switch (currentMode) {
             case SWITCH ->
-                    fillSquaresWithColor(game.getBoard().getPositionsOfPlayersTroops(game.getCurrentPlayer(), null, "SWITCH"), Color.WHITE);
+                    fillSquaresWithColor(game.getBoard().getPositionsOfPlayersTroops(game.getCurrentPlayer(), null, "SWITCH", isSilverBottom), Color.WHITE);
             case STEP ->
-                    fillSquaresWithColor(game.getBoard().getPositionsOfPlayersTroops(game.getCurrentPlayer(), null, "STEP"), Color.WHITE);
+                    fillSquaresWithColor(game.getBoard().getPositionsOfPlayersTroops(game.getCurrentPlayer(), null, "STEP", isSilverBottom), Color.WHITE);
             case PULL ->
-                    fillSquaresWithColor(game.getBoard().getPositionsOfPlayersTroops(game.getCurrentPlayer(), game.getEnemyPlayer(), "PULL"), Color.WHITE);
+                    fillSquaresWithColor(game.getBoard().getPositionsOfPlayersTroops(game.getCurrentPlayer(), game.getEnemyPlayer(), "PULL", isSilverBottom), Color.WHITE);
             case PUSH ->
-                    fillSquaresWithColor(game.getBoard().getPositionsOfPlayersTroops(game.getCurrentPlayer(), game.getEnemyPlayer(), "PUSH"), Color.WHITE);
+                    fillSquaresWithColor(game.getBoard().getPositionsOfPlayersTroops(game.getCurrentPlayer(), game.getEnemyPlayer(), "PUSH", isSilverBottom), Color.WHITE);
         }
     }
 
@@ -342,14 +349,26 @@ public class BoardPanel extends JPanel {
         if (selectedPositions.size() == 0) {
             resetSquaresColors();
             fillSquareWithColor(squarePosition, currentMode.getColor());
-            fillSquaresWithColor((ArrayList<Offset2D>) game.getBoard().getValidStepMovesByItselfForPosition(squarePosition).stream().map(StepMove::getTo).collect(Collectors.toList()), Color.WHITE);
+            boolean isSilverBottom = client != null && game.getCurrentPlayer().getPlayerId() == 2;
+            fillSquaresWithColor((ArrayList<Offset2D>) game.getBoard().getValidStepMovesByItselfForPosition(squarePosition, isSilverBottom).stream().map(StepMove::getTo).collect(Collectors.toList()), Color.WHITE);
         } else if (selectedPositions.size() == 1) {
             stepMovePiece(new StepMove(selectedPositions.get(0), squarePosition));
             checkTraps();
-            game.checkWinning();
+            if (client != null)
+                game.checkWinningOnline();
+            else
+                game.checkWinning();
             if (!game.isGameFinished()) {
                 handleModeReset();
                 game.decrementMovesLeft(1);
+                if (client != null) {
+                    GameState gameState = game.saveState(1, false);
+                    try {
+                        client.sendObjectToEnemy(gameState);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
             }
         }
     }
@@ -364,12 +383,14 @@ public class BoardPanel extends JPanel {
         if (selectedPositions.size() == 0) {
             resetSquaresColors();
             fillSquareWithColor(squarePosition, currentMode.getColor());
-            fillSquaresWithColor(game.getBoard().getPositionsOfPossiblePullingPieces(squarePosition), Color.WHITE);
+            boolean isSilverBottom = client != null && game.getCurrentPlayer().getPlayerId() == 2;
+            fillSquaresWithColor(game.getBoard().getPositionsOfPossiblePullingPieces(squarePosition, isSilverBottom), Color.WHITE);
         } else if (selectedPositions.size() == 1) {
             resetSquaresColors();
             selectedPositions.add(squarePosition);
             fillSquaresWithColor(selectedPositions, currentMode.getColor());
-            fillSquaresWithColor((ArrayList<Offset2D>) game.getBoard().getValidPullMovesForPullerAndPulled(squarePosition, selectedPositions.get(0)).stream().map(ComplexMove::getTo).collect(Collectors.toList()), Color.WHITE);
+            boolean isSilverBottom = client != null && game.getCurrentPlayer().getPlayerId() == 2;
+            fillSquaresWithColor((ArrayList<Offset2D>) game.getBoard().getValidPullMovesForPullerAndPulled(squarePosition, selectedPositions.get(0), isSilverBottom).stream().map(ComplexMove::getTo).collect(Collectors.toList()), Color.WHITE);
         } else if (selectedPositions.size() == 2) {
             Offset2D pulledPiecePosition = null;
             Offset2D pullingPiecePosition = null;
@@ -382,10 +403,21 @@ public class BoardPanel extends JPanel {
             }
             pullMovePieces(new ComplexMove(pullingPiecePosition, squarePosition, pulledPiecePosition, pullingPiecePosition));
             checkTraps();
-            game.checkWinning();
+            if (client != null)
+                game.checkWinningOnline();
+            else
+                game.checkWinning();
             if (!game.isGameFinished()) {
                 handleModeReset();
                 game.decrementMovesLeft(2);
+                if (client != null) {
+                    GameState gameState = game.saveState(1, false);
+                    try {
+                        client.sendObjectToEnemy(gameState);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
             }
         }
     }
@@ -418,10 +450,21 @@ public class BoardPanel extends JPanel {
             }
             pushMovePieces(new ComplexMove(pushingPiecePosition, pushedPiecePosition, pushedPiecePosition, squarePosition));
             checkTraps();
-            game.checkWinning();
+            if (client != null)
+                game.checkWinningOnline();
+            else
+                game.checkWinning();
             if (!game.isGameFinished()) {
                 handleModeReset();
                 game.decrementMovesLeft(2);
+                if (client != null) {
+                    GameState gameState = game.saveState(1, false);
+                    try {
+                        client.sendObjectToEnemy(gameState);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
             }
         }
     }

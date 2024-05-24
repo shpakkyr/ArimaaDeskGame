@@ -1,6 +1,7 @@
 package Client.View;
 
 import Client.Model.GameModel;
+import Server.Client;
 
 import javax.swing.*;
 import java.awt.*;
@@ -75,6 +76,17 @@ public class WelcomePanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 view.loadReplay();
+            }
+        });
+
+        onlineButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String playerName = JOptionPane.showInputDialog(GameView.getWindow(), "Enter your name:");
+                // Show the new game dialog immediately
+                new Thread(() -> {
+                    Client.main(new String[]{playerName}, view);
+                }).start();
             }
         });
 

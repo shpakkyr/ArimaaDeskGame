@@ -43,7 +43,7 @@ public class GameLawsTest {
         expectedPositions.add(new Offset2D(3,3));
         expectedPositions.add(new Offset2D(6,3));
 
-        Assertions.assertEquals(expectedPositions, new HashSet<>(board.canStepPositions(player1)));
+        Assertions.assertEquals(expectedPositions, new HashSet<>(board.canStepPositions(player1, false)));
     }
 
     /**
@@ -64,7 +64,7 @@ public class GameLawsTest {
                 {"", "", "", "", "", "", "", ""},
         };
         board.populateBoardFrom2DString(winBoard, player1, player2);
-        Assertions.assertTrue(board.isWinner(player1, player2));
+        Assertions.assertTrue(board.isWinner(player1, player2, 1));
 
         // Test case 2: Golden player loses as enemy rabbit reaches beginning of the board
         winBoard = new String[][]{
@@ -78,7 +78,7 @@ public class GameLawsTest {
                 {"", "", "", "", "r", "", "", ""},
         };
         board.populateBoardFrom2DString(winBoard, player1, player2);
-        Assertions.assertFalse(board.isWinner(player1, player2));
+        Assertions.assertFalse(board.isWinner(player1, player2, 1));
 
         // Test case 3: Golden player wins when no rabbits are left on silver side
         winBoard = new String[][]{
@@ -92,7 +92,7 @@ public class GameLawsTest {
                 {"", "", "", "", "R", "", "", ""}
         };
         board.populateBoardFrom2DString(winBoard, player1, player2);
-        Assertions.assertTrue(board.isWinner(player1, player2));
+        Assertions.assertTrue(board.isWinner(player1, player2, 1));
 
         // Test case 4: Golden player loses when no rabbits are left on his side
         winBoard = new String[][]{
@@ -106,7 +106,7 @@ public class GameLawsTest {
                 {"", "", "", "", "", "", "", ""}
         };
         board.populateBoardFrom2DString(winBoard, player1, player2);
-        Assertions.assertFalse(board.isWinner(player1, player2));
+        Assertions.assertFalse(board.isWinner(player1, player2, 1));
 
         // Test case 5: Golden player wins when all silver troops are frozen
         winBoard = new String[][]{
@@ -120,7 +120,7 @@ public class GameLawsTest {
                 {"", "R", "", "", "", "", "", ""}
         };
         board.populateBoardFrom2DString(winBoard, player1, player2);
-        Assertions.assertTrue(board.isWinner(player1, player2));
+        Assertions.assertTrue(board.isWinner(player1, player2, 1));
 
         // Test case 6: Golden player loses when all his troops are frozen
         winBoard = new String[][]{
@@ -134,7 +134,7 @@ public class GameLawsTest {
                 {"", "", "", "", "", "", "", ""}
         };
         board.populateBoardFrom2DString(winBoard, player1, player2);
-        Assertions.assertFalse(board.isWinner(player1, player2));
+        Assertions.assertFalse(board.isWinner(player1, player2, 1));
     }
 
     /**
@@ -164,14 +164,14 @@ public class GameLawsTest {
         //Test case 2: Testing where can silver cat be pulled or positions of pieces that can make a push on it
         expectedPositions.add(new Offset2D(3,2));
         expectedPositions.add(new Offset2D(4,3));
-        Assertions.assertEquals(expectedPositions, new HashSet<>(board.getPositionsOfPossiblePullingPieces(new Offset2D(3,3))));
+        Assertions.assertEquals(expectedPositions, new HashSet<>(board.getPositionsOfPossiblePullingPieces(new Offset2D(3,3), false)));
         Assertions.assertEquals(expectedPositions, new HashSet<>(board.getPositionsOfPossiblePushingPieces(new Offset2D(3,3))));
         expectedPositions.clear();
 
         //Test case 3: Testing where can silver horse be pulled or positions of pieces that can make a push on it
         expectedPositions.add(new Offset2D(7,7));
         expectedPositions.add(new Offset2D(6,6));
-        Assertions.assertEquals(expectedPositions, new HashSet<>(board.getPositionsOfPossiblePullingPieces(new Offset2D(6,7))));
+        Assertions.assertEquals(expectedPositions, new HashSet<>(board.getPositionsOfPossiblePullingPieces(new Offset2D(6,7), false)));
         Assertions.assertEquals(expectedPositions, new HashSet<>(board.getPositionsOfPossiblePushingPieces(new Offset2D(6,7))));
     }
 
@@ -250,16 +250,16 @@ public class GameLawsTest {
         expectedDirections.add(Directions.RIGHT);
 
         // Test case 1: Golden dog valid directions
-        Assertions.assertEquals(expectedDirections, new HashSet<>(board.getTileAt(new Offset2D(1,3)).troopValidDirections()));
+        Assertions.assertEquals(expectedDirections, new HashSet<>(board.getTileAt(new Offset2D(1,3)).troopValidDirections(false)));
         // Test case 2: Silver dog valid directions
-        Assertions.assertEquals(expectedDirections, new HashSet<>(board.getTileAt(new Offset2D(6,4)).troopValidDirections()));
+        Assertions.assertEquals(expectedDirections, new HashSet<>(board.getTileAt(new Offset2D(6,4)).troopValidDirections(false)));
 
         // Test case 3: Golden rabbit valid directions (excluding South)
         expectedDirections.remove(Directions.SOUTH);
-        Assertions.assertEquals(expectedDirections, new HashSet<>(board.getTileAt(new Offset2D(6,6)).troopValidDirections()));
+        Assertions.assertEquals(expectedDirections, new HashSet<>(board.getTileAt(new Offset2D(6,6)).troopValidDirections(false)));
         // Test case 4: Silver rabbit valid directions (excluding North)
         expectedDirections.add(Directions.SOUTH);
         expectedDirections.remove(Directions.NORTH);
-        Assertions.assertEquals(expectedDirections, new HashSet<>(board.getTileAt(new Offset2D(1,1)).troopValidDirections()));
+        Assertions.assertEquals(expectedDirections, new HashSet<>(board.getTileAt(new Offset2D(1,1)).troopValidDirections(false)));
     }
 }
