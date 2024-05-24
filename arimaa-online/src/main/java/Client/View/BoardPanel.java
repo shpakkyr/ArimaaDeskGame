@@ -1,6 +1,5 @@
 package Client.View;
 
-import Client.Controller.Saver;
 import Client.Model.*;
 
 import javax.imageio.ImageIO;
@@ -185,11 +184,11 @@ public class BoardPanel extends JPanel {
      *
      * @param pullMove The pull move to execute.
      */
-    public void pullMovePieces(PullMove pullMove) {
+    public void pullMovePieces(ComplexMove pullMove) {
         StepMove pullingPieceMove = new StepMove(pullMove.getFrom(), pullMove.getTo());
         stepMovePiece(pullingPieceMove);
         checkTraps();
-        StepMove pulledPieceMove = new StepMove(pullMove.getPulledPieceFrom(), pullMove.getPulledPieceTo());
+        StepMove pulledPieceMove = new StepMove(pullMove.getMovedPieceFrom(), pullMove.getMovedPieceTo());
         stepMovePiece(pulledPieceMove);
     }
 
@@ -198,8 +197,8 @@ public class BoardPanel extends JPanel {
      *
      * @param pushMove The push move to execute.
      */
-    public void pushMovePieces(PushMove pushMove) {
-        StepMove pushedPieceMove = new StepMove(pushMove.getPushedPieceFrom(), pushMove.getPushedPieceTo());
+    public void pushMovePieces(ComplexMove pushMove) {
+        StepMove pushedPieceMove = new StepMove(pushMove.getMovedPieceFrom(), pushMove.getMovedPieceTo());
         stepMovePiece(pushedPieceMove);
         checkTraps();
         StepMove pushingPieceMove = new StepMove(pushMove.getFrom(), pushMove.getTo());
@@ -370,7 +369,7 @@ public class BoardPanel extends JPanel {
             resetSquaresColors();
             selectedPositions.add(squarePosition);
             fillSquaresWithColor(selectedPositions, currentMode.getColor());
-            fillSquaresWithColor((ArrayList<Offset2D>) game.getBoard().getValidPullMovesForPullerAndPulled(squarePosition, selectedPositions.get(0)).stream().map(PullMove::getTo).collect(Collectors.toList()), Color.WHITE);
+            fillSquaresWithColor((ArrayList<Offset2D>) game.getBoard().getValidPullMovesForPullerAndPulled(squarePosition, selectedPositions.get(0)).stream().map(ComplexMove::getTo).collect(Collectors.toList()), Color.WHITE);
         } else if (selectedPositions.size() == 2) {
             Offset2D pulledPiecePosition = null;
             Offset2D pullingPiecePosition = null;
@@ -381,7 +380,7 @@ public class BoardPanel extends JPanel {
                     pulledPiecePosition = position;
                 }
             }
-            pullMovePieces(new PullMove(pullingPiecePosition, squarePosition, pulledPiecePosition, pullingPiecePosition));
+            pullMovePieces(new ComplexMove(pullingPiecePosition, squarePosition, pulledPiecePosition, pullingPiecePosition));
             checkTraps();
             game.checkWinning();
             if (!game.isGameFinished()) {
@@ -406,7 +405,7 @@ public class BoardPanel extends JPanel {
             resetSquaresColors();
             selectedPositions.add(squarePosition);
             fillSquaresWithColor(selectedPositions, currentMode.getColor());
-            fillSquaresWithColor((ArrayList<Offset2D>) game.getBoard().getValidPushMovesForPusherAndPushed(squarePosition, selectedPositions.get(0)).stream().map(PushMove::getPushedPieceTo).collect(Collectors.toList()), Color.WHITE);
+            fillSquaresWithColor((ArrayList<Offset2D>) game.getBoard().getValidPushMovesForPusherAndPushed(squarePosition, selectedPositions.get(0)).stream().map(ComplexMove::getMovedPieceTo).collect(Collectors.toList()), Color.WHITE);
         } else if (selectedPositions.size() == 2) {
             Offset2D pushedPiecePosition = null;
             Offset2D pushingPiecePosition = null;
@@ -417,7 +416,7 @@ public class BoardPanel extends JPanel {
                     pushedPiecePosition = position;
                 }
             }
-            pushMovePieces(new PushMove(pushingPiecePosition, pushedPiecePosition, pushedPiecePosition, squarePosition));
+            pushMovePieces(new ComplexMove(pushingPiecePosition, pushedPiecePosition, pushedPiecePosition, squarePosition));
             checkTraps();
             game.checkWinning();
             if (!game.isGameFinished()) {

@@ -313,44 +313,16 @@ public class GameView extends JPanel implements Runnable{
             lastTime = currentTime;
 
             if(delta >= 1) {
-                update();
                 repaint();
                 delta--;
             }
         }
     }
 
-    private void update(){
-        //TODO
-    }
-
-
-
-    public BoardPanel getBoardPanel() {
-        return boardPanel;
-    }
-
-    public GameControllerPanel getControlPanel() {
-        return controlPanel;
-    }
-
     public static JFrame getWindow() {
         return window;
     }
-
-    public static JPanel getCurrentPanel() {
-        return currentPanel;
-    }
-
-    public static JPanel getCurrentRightPanel() {
-        return currentRightPanel;
-    }
-
     public GameModel getGame() {
         return game;
-    }
-
-    public Board getBoard() {
-        return board;
     }
 }

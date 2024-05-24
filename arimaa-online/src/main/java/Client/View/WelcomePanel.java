@@ -8,10 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class WelcomePanel extends JPanel {
-    private GameModel game;
     private GameView view;
     public WelcomePanel(GameModel game, GameView view) {
-        this.game = game;
         setLayout(new BorderLayout());
 
         JLabel welcomeLabel = new JLabel("Arimaa");

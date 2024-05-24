@@ -1,7 +1,5 @@
 package Client.Model;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class Troop {
@@ -16,7 +14,7 @@ public class Troop {
         return type;
     }
 
-    public static Troop createPieceFromNotationPlayerWithSpecificPlayer(String pieceTypeString, Player player) {
+    public static Troop createPieceFromNotationPlayerWithSpecificPlayer(String pieceTypeString) {
         if (Objects.equals(pieceTypeString, "")) {
             return null;
         }

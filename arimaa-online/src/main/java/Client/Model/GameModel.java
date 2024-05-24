@@ -1,7 +1,5 @@
 package Client.Model;
 
-import Client.View.*;
-
 import java.util.ArrayList;
 
 public class GameModel {
@@ -83,10 +81,6 @@ public class GameModel {
         return enemyPlayer;
     }
 
-    public Player getWinner() {
-        return winner;
-    }
-
     public int getPhase() {
         return phase;
     }
@@ -97,14 +91,6 @@ public class GameModel {
 
     public boolean isGameFinished() {
         return isGameFinished;
-    }
-
-    public void setPlayer1(Player player1) {
-        this.player1 = player1;
-    }
-
-    public void setPlayer2(Player player2) {
-        this.player2 = player2;
     }
 
     public void setPlayers(Player player1, Player player2) {

@@ -1,18 +1,10 @@
 package Client.Model;
 
-import jdk.jfr.BooleanFlag;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Objects;
 
 import static Client.Model.TroopType.RABBIT;
-import static Client.Model.TroopType.toNotation;
 
 public class Board implements Serializable {
     public static final int DIMENSION = 8;
@@ -266,10 +258,10 @@ public class Board implements Serializable {
         return positionsArrayList;
     }
 
-    public ArrayList<PullMove> getValidPullMovesForPullerAndPulled(Offset2D pullingPiecePosition, Offset2D pulledPiecePosition){
-        ArrayList<PullMove> pullMoveArrayList = new ArrayList<>();
+    public ArrayList<ComplexMove> getValidPullMovesForPullerAndPulled(Offset2D pullingPiecePosition, Offset2D pulledPiecePosition){
+        ArrayList<ComplexMove> pullMoveArrayList = new ArrayList<>();
         for (StepMove pullerStepMove : getValidStepMovesByItselfForPosition(pullingPiecePosition)){
-            pullMoveArrayList.add(new PullMove(
+            pullMoveArrayList.add(new ComplexMove(
                     pullerStepMove.getFrom(),
                     pullerStepMove.getTo(),
                     pulledPiecePosition,
@@ -304,10 +296,10 @@ public class Board implements Serializable {
 
     }
 
-    public ArrayList<PushMove> getValidPushMovesForPusherAndPushed(Offset2D pushingPiecePosition, Offset2D pushedPiecePosition){
-        ArrayList<PushMove> pushMoveArrayList = new ArrayList<>();
+    public ArrayList<ComplexMove> getValidPushMovesForPusherAndPushed(Offset2D pushingPiecePosition, Offset2D pushedPiecePosition){
+        ArrayList<ComplexMove> pushMoveArrayList = new ArrayList<>();
         for (StepMove pushedStepMove : getValidStepMovesByPushingPullingForPosition(pushedPiecePosition)){
-            pushMoveArrayList.add(new PushMove(
+            pushMoveArrayList.add(new ComplexMove(
                     pushingPiecePosition,
                     pushedPiecePosition,
                     pushedStepMove.getFrom(),
@@ -340,7 +332,7 @@ public class Board implements Serializable {
                     continue;
                 };
                 Player player = Character.isUpperCase(stringPiece.charAt(0)) ? player1 : player2;
-                Troop piece = Troop.createPieceFromNotationPlayerWithSpecificPlayer(stringPiece, player);
+                Troop piece = Troop.createPieceFromNotationPlayerWithSpecificPlayer(stringPiece);
                 placeTroop(piece, position);
                 placePlayerOnTile(player, position);
             }
@@ -363,12 +355,6 @@ public class Board implements Serializable {
                 }
             }
         }
-//        for(int j = 0; j < 8; j++) {
-//            for (int i = 0; i < 8; i++) {
-//                System.out.print(copy[j][i] + " ");
-//            }
-//            System.out.print("\n");
-//        }
         return copy;
     }
 }
