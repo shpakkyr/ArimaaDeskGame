@@ -23,7 +23,13 @@ public class GameModePanel extends JPanel {
         setLayout(new BorderLayout());
 
         // Title label
-        JLabel welcomeLabel = new JLabel("Versus Computer");
+        JLabel welcomeLabel;
+        if(vsComputer){
+            welcomeLabel = new JLabel("Versus Computer");
+        }else{
+            welcomeLabel = new JLabel("Local Multiplayer");
+
+        }
         welcomeLabel.setHorizontalAlignment(JLabel.CENTER);
         welcomeLabel.setVerticalAlignment(JLabel.CENTER);
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 24));

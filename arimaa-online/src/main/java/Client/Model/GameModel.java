@@ -163,6 +163,10 @@ public class GameModel {
     public void setPlayers(Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
+    }
+
+    public void setCurrentPlayer(Player player1, Player player2){
+
         this.currentPlayer = player1;
         this.enemyPlayer = player2;
     }
