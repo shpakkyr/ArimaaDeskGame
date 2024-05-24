@@ -24,15 +24,25 @@ public class GameControllerPanel extends JPanel implements GameListener {
     private final JButton giveUpButton;
     private final JButton saveButton;
     private final JButton compButton;
+    private final JButton menuButton;
     private final BoardPanel boardPanel;
-    private GameModel game;
+    private final GameModel game;
     private ArrayList<GameState> gameState = new ArrayList<GameState>();
     private final JPanel gameControllerPanel;
     private int firstTurnCheck = 0;
     private CountdownTimer timer;
     private final boolean vsComputer;
     private final JLabel timerLabel;
-    public GameControllerPanel(GameModel game, BoardPanel boardPanel, boolean vsComputer) {
+
+    /**
+     * Constructs a new GameControllerPanel with the specified game model and view.
+     *
+     * @param game The game model.
+     * @param boardPanel The panel with a board.
+     * @param vsComputer boolean to determine the mode of the game.
+     * @param view The game view.
+     */
+    public GameControllerPanel(GameModel game, BoardPanel boardPanel, boolean vsComputer, GameView view) {
         this.game = game;
         this.boardPanel = boardPanel;
         this.vsComputer = vsComputer;
@@ -46,7 +56,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
         player2infoGroup.add(playerTopName);
         player2infoGroup.add(Box.createRigidArea(new Dimension(0, 5)));
 
-        //CENTER - timer, turn info and controll buttons
+        //CENTER - timer, turn info and control buttons
         turnIndicator = new JLabel("Gold Player's Turn");
         turnIndicator.setForeground(Color.BLACK);
 
@@ -109,7 +119,10 @@ public class GameControllerPanel extends JPanel implements GameListener {
         saveButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, saveButton.getMinimumSize().height));
         compButton = new JButton("PC Move");
         compButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, compButton.getMinimumSize().height));
+        menuButton = new JButton("Main Menu");
+        menuButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, compButton.getMinimumSize().height));
         compButton.setVisible(false);
+        menuButton.setVisible(false);
 
         //CENTER constructor
         gameControllerPanel = createGroupPanel(Color.WHITE);
@@ -130,6 +143,8 @@ public class GameControllerPanel extends JPanel implements GameListener {
         gameControllerPanel.add(saveButton);
         gameControllerPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         gameControllerPanel.add(compButton);
+        gameControllerPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        gameControllerPanel.add(menuButton);
         gameControllerPanel.add(Box.createVerticalGlue());
 
         //SOUTH - player 1 info
@@ -203,6 +218,10 @@ public class GameControllerPanel extends JPanel implements GameListener {
         });
 
         saveButton.addActionListener(e -> saveGame());
+        menuButton.addActionListener( e ->{
+            view.closeWindow();
+            Launcher.main(new String[0]);
+        });
     }
 
     /**
@@ -340,6 +359,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
         giveUpButton.setVisible(false);
         movesLeftLabel.setVisible(false);
         compButton.setVisible(false);
+        menuButton.setVisible(true);
         turnIndicator.setText(winner.getPlayerName() + " won!");
         showWinnerPopup(winner);
     }
