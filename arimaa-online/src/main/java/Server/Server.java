@@ -19,10 +19,6 @@ public class Server {
     public static final CountDownLatch latch = new CountDownLatch(2);
     private boolean bothConnected = false;
 
-    public static String enemyPlayer(String player) {
-        return playerName2;
-    }
-
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         Server server = new Server();
         server.startServer(args);

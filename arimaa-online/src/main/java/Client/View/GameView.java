@@ -15,18 +15,13 @@ import java.util.ArrayList;
  * It includes methods for initializing the game, starting a new game, continuing a saved game,
  * reviewing a finished game, and loading saved game or replay files.
  */
-public class GameView extends JPanel implements Runnable{
-    private static JFrame window;
-    private static JPanel currentPanel;
-    private static JPanel currentRightPanel;
+public class GameView extends JPanel{
+    private JFrame window;
+    private JPanel currentPanel;
+    private JPanel currentRightPanel;
     private final GameModel game;
     private BoardPanel boardPanel;
-    private ReplayControllerPanel replayPanel;
     private GameControllerPanel controlPanel;
-    static final int FPS = 60;
-    Thread gameThread;
-    private final Board board = new Board();
-    private Client client;
 
     /**
      * Constructor for GameView class.
@@ -82,7 +77,6 @@ public class GameView extends JPanel implements Runnable{
     }
 
     public void startOnlineGame(String player1name, String player2name, int playerId, int playerEnemyId, Client client) {
-        this.client = client;
         Player player1 = new Player(playerId, player1name, false);
         Player player2 = new Player(playerEnemyId, player2name, false);
         game.setPlayers(player1, player2);
@@ -160,7 +154,7 @@ public class GameView extends JPanel implements Runnable{
         boardPanel = new BoardPanel(game);
         boardPanel.setGame(game);
         changeCurrentPanel(boardPanel);
-        replayPanel = new ReplayControllerPanel(game,this);
+        ReplayControllerPanel replayPanel = new ReplayControllerPanel(game, this);
         currentRightPanel = replayPanel;
         changeRightPanel(currentRightPanel);
         replayPanel.loadSnapInfo(gameState);
@@ -305,7 +299,7 @@ public class GameView extends JPanel implements Runnable{
      *
      * @param newPanel The new panel to be displayed.
      */
-    public static void changeCurrentPanel(JPanel newPanel) {
+    public void changeCurrentPanel(JPanel newPanel) {
         window.remove(currentPanel);
         window.add(newPanel, BorderLayout.CENTER);
         currentPanel = newPanel;
@@ -318,7 +312,7 @@ public class GameView extends JPanel implements Runnable{
      *
      * @param newPanel The new panel to be displayed.
      */
-    public static void changeRightPanel(JPanel newPanel) {
+    public void changeRightPanel(JPanel newPanel) {
         window.remove(currentRightPanel);
         window.add(newPanel, BorderLayout.EAST);
         currentRightPanel = newPanel;
@@ -326,13 +320,6 @@ public class GameView extends JPanel implements Runnable{
         window.repaint();
     }
 
-    /**
-     * Launches the game thread.
-     */
-    public void launchGame() {
-        gameThread = new Thread(this);
-        gameThread.start();
-    }
 
     /**
      * Closes the game window.
@@ -341,31 +328,7 @@ public class GameView extends JPanel implements Runnable{
         window.dispose();
     }
 
-    /**
-     * The run method is called when the game thread is started. It continuously updates
-     * and repaints the game at a fixed frame rate defined by the FPS variable.
-     */
-    @Override
-    public void run() {
-        double drawInterval = 1000000000/FPS;
-        double delta = 0;
-        long lastTime = System.nanoTime();
-        long currentTime;
-
-        while(gameThread != null) {
-            currentTime = System.nanoTime();
-
-            delta += (currentTime - lastTime)/drawInterval;
-            lastTime = currentTime;
-
-            if(delta >= 1) {
-                repaint();
-                delta--;
-            }
-        }
-    }
-
-    public static JFrame getWindow() {
+    public JFrame getWindow() {
         return window;
     }
     public GameModel getGame() {

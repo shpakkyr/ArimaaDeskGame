@@ -116,11 +116,11 @@ public class GameLawsTest {
                 {"", "", "", "", "", "", "", ""},
                 {"", "", "", "", "", "", "", ""},
                 {"", "", "", "", "", "", "", ""},
-                {"", "", "", "r", "D", "", "", ""},
+                {"", "", "", "h", "E", "", "", ""},
                 {"", "R", "", "", "", "", "", ""}
         };
         board.populateBoardFrom2DString(winBoard, player1, player2);
-        //Assertions.assertTrue(board.isWinner(player1, player2, 1));
+        Assertions.assertTrue(board.isWinner(player1, player2, 1));
 
         // Test case 6: Golden player loses when all his troops are frozen
         winBoard = new String[][]{

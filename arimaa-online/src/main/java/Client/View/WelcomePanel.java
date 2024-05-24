@@ -54,21 +54,21 @@ public class WelcomePanel extends JPanel {
         rulesButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GameView.changeCurrentPanel(new RulesPanel(game, view));
+                view.changeCurrentPanel(new RulesPanel(game, view));
             }
         });
 
         PvCButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GameView.changeCurrentPanel(new GameModePanel(game, view, true));
+                view.changeCurrentPanel(new GameModePanel(game, view, true));
             }
         });
 
         PvPButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GameView.changeCurrentPanel(new GameModePanel(game, view, false));
+                view.changeCurrentPanel(new GameModePanel(game, view, false));
             }
         });
 
@@ -82,7 +82,7 @@ public class WelcomePanel extends JPanel {
         onlineButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String playerName = JOptionPane.showInputDialog(GameView.getWindow(), "Enter your name:");
+                String playerName = JOptionPane.showInputDialog(view.getWindow(), "Enter your name:");
                 // Show the new game dialog immediately
                 new Thread(() -> {
                     Client.main(new String[]{playerName}, view);

@@ -63,7 +63,7 @@ public class GameModePanel extends JPanel {
         ReturnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GameView.changeCurrentPanel(new WelcomePanel(game, view));
+                view.changeCurrentPanel(new WelcomePanel(game, view));
             }
         });
 
@@ -71,7 +71,7 @@ public class GameModePanel extends JPanel {
         NGButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                view.showNewGameDialog(GameView.getWindow(), vsComputer);
+                view.showNewGameDialog(view.getWindow(), vsComputer);
             }
         });
 

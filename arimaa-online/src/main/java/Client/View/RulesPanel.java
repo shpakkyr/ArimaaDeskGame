@@ -85,7 +85,7 @@ public class RulesPanel extends JPanel {
         returnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GameView.changeCurrentPanel(new WelcomePanel(game, view));
+                view.changeCurrentPanel(new WelcomePanel(game, view));
             }
         });
     }
