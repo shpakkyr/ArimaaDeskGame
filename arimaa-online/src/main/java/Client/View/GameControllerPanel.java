@@ -32,7 +32,6 @@ public class GameControllerPanel extends JPanel implements GameListener {
     private final GameModel game;
     private ArrayList<GameState> gameState = new ArrayList<GameState>();
     private final JPanel gameControllerPanel;
-    private int firstTurnCheck = 0;
     private CountdownTimer timer;
     private final boolean vsComputer;
     private final JLabel timerLabel;
@@ -206,8 +205,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
 
         //Action listeners for all buttons
         finishButton.addActionListener(e -> {
-            firstTurnCheck++;
-            if(firstTurnCheck > 1 && game.getMovesLeft() == 4) {
+            if(game.getPhase() > 1 && game.getMovesLeft() == 4) {
                 boardSnap();
             }
             boardPanel.resetSquaresColors();
