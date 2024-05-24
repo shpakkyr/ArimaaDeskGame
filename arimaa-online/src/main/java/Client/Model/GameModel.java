@@ -184,6 +184,9 @@ public class GameModel {
         }
     }
 
+    /**
+     * Checks if there is a winner and updates the game state accordingly if tha game is online.
+     */
     public void checkWinningOnline() {
         boolean player1won = board.isWinner(player1, player2, getCurrentPlayer().getPlayerId());
         boolean player2won = board.isWinner(player2, player1, getCurrentPlayer().getPlayerId());
@@ -229,6 +232,11 @@ public class GameModel {
         this.isGameFinished = gameState.getLast().isGameFinished;
     }
 
+    /**
+     * Updates the game state for a player in online multiplayer, when the move was made by another player.
+     *
+     * @param gameState The game state which should be assigned.
+     */
     public void updateGameState(GameState gameState) {
         this.currentPlayer = gameState.currentPlayer;
         this.enemyPlayer = gameState.enemyPlayer;

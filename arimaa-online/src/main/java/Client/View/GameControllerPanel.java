@@ -249,6 +249,10 @@ public class GameControllerPanel extends JPanel implements GameListener {
         saveButton.addActionListener(e -> saveGame());
     }
 
+    /**
+     * Method disables buttons for a player when he finished the move.
+     * Applies only for online multiplayer.
+     */
     public void disableButtons() {
         switchButton.setVisible(false);
         noneButton.setVisible(false);

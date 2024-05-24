@@ -53,16 +53,6 @@ public class BoardPanel extends JPanel {
         fillSquares();
     }
 
-    public void setGame(GameModel game) {
-        this.game = game;
-        fillSquares();
-        resetSquaresColors();
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
     /**
      * Fills the squares on the board with the appropriate images based on the game state.
      */
@@ -119,18 +109,6 @@ public class BoardPanel extends JPanel {
     }
 
     /**
-     * Places a troop at the specified position on the board.
-     *
-     * @param troop     The troop to place.
-     * @param offset2D  The position to place the troop at.
-     */
-    public void placeTroopAt(Troop troop, Offset2D offset2D) {
-        game.getBoard().placeTroop(troop, offset2D);
-        fillSquares();
-        resetSquaresColors();
-    }
-
-    /**
      * Fills a specific square with a given color.
      *
      * @param offset2D The position of the square.
@@ -170,9 +148,6 @@ public class BoardPanel extends JPanel {
         }
     }
 
-    public void setGameMode(GameMode mode) {
-        currentMode = mode;
-    }
 
     /**
      * Executes a step move and updates the board.
@@ -341,6 +316,7 @@ public class BoardPanel extends JPanel {
 
     /**
      * Handles the STEP game mode logic.
+     * If client is created then after move is done the gameState will be sent to another player to update his board.
      *
      * @param squarePosition     The position of the clicked square.
      * @param selectedPositions  The positions currently selected.
@@ -375,6 +351,7 @@ public class BoardPanel extends JPanel {
 
     /**
      * Handles the PULL game mode logic.
+     * If client is created then after move is done the gameState will be sent to another player to update his board.
      *
      * @param squarePosition     The position of the clicked square.
      * @param selectedPositions  The positions currently selected.
@@ -424,6 +401,7 @@ public class BoardPanel extends JPanel {
 
     /**
      * Handles the PUSH game mode logic.
+     * If client is created then after move is done the gameState will be sent to another player to update his board.
      *
      * @param squarePosition     The position of the clicked square.
      * @param selectedPositions  The positions currently selected.
@@ -538,4 +516,19 @@ public class BoardPanel extends JPanel {
 
         return position;
     }
+
+    public void setGame(GameModel game) {
+        this.game = game;
+        fillSquares();
+        resetSquaresColors();
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public void setGameMode(GameMode mode) {
+        currentMode = mode;
+    }
+
 }

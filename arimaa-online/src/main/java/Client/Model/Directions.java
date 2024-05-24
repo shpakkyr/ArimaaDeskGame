@@ -34,6 +34,13 @@ public enum Directions {
         return column;
     }
 
+    /**
+     * Provides a list of all four main compass directions.
+     * This method is useful for operations where it is necessary to iterate over
+     * each compass direction, such as pathfinding or grid navigation.
+     *
+     * @return ArrayList<Directions> - An ArrayList containing the NORTH, SOUTH, LEFT, and RIGHT directions.
+     */
     public static ArrayList<Directions> get4Directions() {
         return new ArrayList<Directions>(List.of(NORTH, SOUTH, LEFT, RIGHT));
     }

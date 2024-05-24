@@ -544,6 +544,13 @@ public class Board implements Serializable {
         }
     }
 
+    /**
+     * Populates the board from a 2D string array representation but rotated on 180 degrees.
+     *
+     * @param board2DString The 2D string array representation of the board.
+     * @param player1 The first player.
+     * @param player2 The second player.
+     */
     public void populateBoardFrom2DStringRotated(String[][] board2DString, Player player1, Player player2){
         for (int i = 0; i < DIMENSION; i++){
             for (int j = 0; j < DIMENSION; j++){
@@ -553,7 +560,6 @@ public class Board implements Serializable {
                     placeTroop(null, position);
                     continue;
                 };
-//                Player player = Character.isUpperCase(stringPiece.charAt(0)) ? player1 : player2;
                 Player player = null;
                 if (Character.isUpperCase(stringPiece.charAt(0))) {
                     player = player1.getPlayingSide() == PlayingSide.GOLD ? player1 : player2;

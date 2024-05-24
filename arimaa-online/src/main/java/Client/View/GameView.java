@@ -108,6 +108,7 @@ public class GameView extends JPanel implements Runnable{
 //            game.updateGameState(gameState);
 //            System.out.println("After: " + "player 1: " + game.getPlayer1() + "player 2: " + game.getPlayer2() + "player current: " + game.getCurrentPlayer() + "player enemy: " + game.getEnemyPlayer() + game.getPhase());
             game.getBoard().populateBoardFrom2DStringRotated(gameState.boardState, game.getPlayer1(), game.getPlayer2());
+            controlPanel.boardSnap();
             boardPanel.setGame(game);
             changeCurrentPanel(boardPanel);
             game.setGameListener(controlPanel);
