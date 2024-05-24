@@ -9,6 +9,10 @@ import java.net.*;
 import java.util.Objects;
 import java.util.concurrent.*;
 
+/**
+ * The Server class manages connections to clients and handles communication between them.
+ * It uses a thread pool to manage multiple client connections simultaneously.
+ */
 public class Server {
     private static final int PORT = 9999;
     private static final ExecutorService pool = Executors.newFixedThreadPool(2);
@@ -19,11 +23,27 @@ public class Server {
     public static final CountDownLatch latch = new CountDownLatch(2);
     private boolean bothConnected = false;
 
+    /**
+     * The main method for starting the server application.
+     *
+     * @param args Command-line arguments.
+     * @throws IOException If an I/O error occurs.
+     * @throws ClassNotFoundException If a class cannot be found during object deserialization.
+     */
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         Server server = new Server();
         server.startServer(args);
     }
 
+    /**
+     * Starts the server and waits for clients to connect.
+     * This method sets up input and output streams for communication and handles
+     * the reception of game state updates and other messages from the clients.
+     *
+     * @param args Command-line arguments.
+     * @throws IOException If an I/O error occurs.
+     * @throws ClassNotFoundException If a class cannot be found during object deserialization.
+     */
     public void startServer(String[] args) throws IOException, ClassNotFoundException {
         ServerSocket serverSocket = new ServerSocket(PORT);
 
@@ -77,24 +97,41 @@ public class Server {
         serverSocket.close();
     }
 
+    /**
+     * ClientHandler handles communication with a single client.
+     */
     private static class ClientHandler implements Runnable {
         private final Socket clientSocket;
-        private final Socket otherSocket;
-        private ObjectOutputStream outObject;
-        private ObjectInputStream inObject;
-        private String player;
+        private final ObjectOutputStream outObject;
+        private final ObjectInputStream inObject;
+        private final String player;
         private boolean flag = false;
-        private boolean bothConnected;
+        private final boolean bothConnected;
 
+        /**
+         * Constructs a new ClientHandler for the specified client and other client.
+         *
+         * @param clientSocket The socket for the connected client.
+         * @param otherSocket The socket for the other connected client.
+         * @param player The name of the player associated with this client.
+         * @param ois The input stream for reading objects from the client.
+         * @param oos The output stream for writing objects to the client.
+         * @param bothConnected Indicates whether both clients are connected.
+         */
         public ClientHandler(Socket clientSocket, Socket otherSocket, String player, ObjectInputStream ois, ObjectOutputStream oos, boolean bothConnected) {
             this.clientSocket = clientSocket;
-            this.otherSocket = otherSocket;
             this.player = player;
             inObject = ois;
             outObject = oos;
             this.bothConnected = bothConnected;
         }
 
+        /**
+         * Handles the communication with the connected client.
+         * This method continuously listens for and processes incoming objects from the client's input stream.
+         * It handles different types of messages, such as retrieving the enemy player's name, showing messages on the server side,
+         * and sending game state updates to the other client.
+         */
         @Override
         public void run() {
             try {

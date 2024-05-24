@@ -34,6 +34,9 @@ public class GameModel {
             {"R", "R", "R", "R", "R", "R", "R", "R"}
     };
 
+    /**
+     * Default board configuration for a new game if player plays as silver player in online multiplayer.
+     */
     public static final String[][] DEFAULT_BOARD_ROTATED = {
             {"R", "R", "R", "R", "R", "R", "R", "R"},
             {"C", "C", "D", "D", "H", "H", "M", "E"},

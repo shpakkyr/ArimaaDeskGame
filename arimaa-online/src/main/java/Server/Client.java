@@ -8,6 +8,10 @@ import java.io.*;
 import java.net.*;
 import java.nio.Buffer;
 
+/**
+ * The Client class manages the connection to the game server and handles communication
+ * between the client and server, including sending and receiving game states.
+ */
 public class Client {
     private static final String SERVER_IP = "localhost"; // Use localhost" for the same PC
     private static final int SERVER_PORT = 9999;
@@ -18,11 +22,25 @@ public class Client {
     private ObjectOutputStream outObject;
     private ObjectInputStream inObject;
 
+    /**
+     * The main method for starting the client application for online multiplayer.
+     *
+     * @param args Command-line arguments, where the first argument is the player's name.
+     * @param view The GameView object for managing the game UI.
+     */
     public static void main(String[] args, GameView view) {
         Client client = new Client();
         client.startClient(args, view);
     }
 
+    /**
+     * Starts the client and establishes a connection to the server.
+     * This method sets up input and output streams for communication and handles
+     * the reception of game state updates and other messages from the server.
+     *
+     * @param args Command-line arguments, where the first argument is the player's name.
+     * @param view The GameView object for managing the game UI.
+     */
     public void startClient(String[] args, GameView view) {
         try (Socket socket = new Socket(SERVER_IP, SERVER_PORT)) {
             this.socket = socket;
@@ -81,12 +99,12 @@ public class Client {
         }
     }
 
-    public void sendMessageToServer(String message) throws IOException {
-        String messageC = "showMessageOnServerSide";
-        outObject.writeObject("showMessageOnServerSide");
-        outObject.writeObject(message);
-    }
-
+    /**
+     * Sends the current game state to the enemy player via the server.
+     *
+     * @param gameState The current game state to be sent.
+     * @throws IOException If an I/O error occurs while sending the game state.
+     */
     public void sendObjectToEnemy(GameState gameState) throws IOException {
         outObject.writeObject("sendGameState");
         outObject.writeObject(gameState);

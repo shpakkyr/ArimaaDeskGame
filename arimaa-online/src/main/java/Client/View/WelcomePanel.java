@@ -8,8 +8,20 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * The WelcomePanel class represents the initial welcome screen for the game.
+ * It provides buttons for various game modes, including versus computer, local multiplayer,
+ * online multiplayer, viewing replays, and accessing rules and developer information.
+ */
 public class WelcomePanel extends JPanel {
-    private GameView view;
+
+    /**
+     * Constructs a new WelcomePanel with the specified game model and game view.
+     * This panel includes buttons for selecting different game modes and viewing game information.
+     *
+     * @param game The game model containing the game's state and logic.
+     * @param view The game view managing the display and user interactions.
+     */
     public WelcomePanel(GameModel game, GameView view) {
         setLayout(new BorderLayout());
 

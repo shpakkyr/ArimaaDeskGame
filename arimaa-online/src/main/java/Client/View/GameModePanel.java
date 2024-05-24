@@ -18,6 +18,7 @@ public class GameModePanel extends JPanel {
      *
      * @param game The game model.
      * @param view The game view.
+     * @param vsComputer boolean to define if the panel is for singleplayer or local multiplayer mode
      */
     public GameModePanel(GameModel game, GameView view, boolean vsComputer){
         setLayout(new BorderLayout());

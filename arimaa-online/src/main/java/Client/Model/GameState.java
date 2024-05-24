@@ -51,6 +51,14 @@ public class GameState implements Serializable {
         this.vsComputer = vsComputer;
     }
 
+    /**
+     * Returns a string representation of the GameState object.
+     * This method constructs a string that includes the values of various fields
+     * such as player1, player2, currentPlayer, enemyPlayer, winner, phase,
+     * movesLeft, isGameFinished, boardState, remainingTime, and vsComputer.
+     *
+     * @return A string representation of the current state of the game.
+     */
     @Override
     public String toString() {
         return "GameState{" +

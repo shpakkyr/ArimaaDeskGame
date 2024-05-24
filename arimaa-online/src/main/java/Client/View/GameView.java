@@ -76,6 +76,17 @@ public class GameView extends JPanel{
         changeRightPanel(currentRightPanel);
     }
 
+    /**
+     * Initializes and starts an online game with the specified players and client.
+     * This method sets up the game state, board configuration, and UI components
+     * for an online game session.
+     *
+     * @param player1name The name of the first player.
+     * @param player2name The name of the second player.
+     * @param playerId The ID of the first player.
+     * @param playerEnemyId The ID of the second player (the enemy player).
+     * @param client The client object used for online communication.
+     */
     public void startOnlineGame(String player1name, String player2name, int playerId, int playerEnemyId, Client client) {
         Player player1 = new Player(playerId, player1name, false);
         Player player2 = new Player(playerEnemyId, player2name, false);
@@ -97,6 +108,13 @@ public class GameView extends JPanel{
         changeRightPanel(currentRightPanel);
     }
 
+    /**
+     * Updates the game view based on the provided GameState object.
+     * This method updates the board, control panel, and various game components
+     * to reflect the current state of the game. It handles both ongoing and finished games.
+     *
+     * @param gameState The current state of the game.
+     */
     public void updateView(GameState gameState){
         if (gameState.phase == game.getPhase() && !gameState.isGameFinished) {
             game.getBoard().populateBoardFrom2DStringRotated(gameState.boardState, game.getPlayer1(), game.getPlayer2());

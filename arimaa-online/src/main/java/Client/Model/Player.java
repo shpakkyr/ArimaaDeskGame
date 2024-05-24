@@ -72,6 +72,13 @@ public class Player implements Serializable {
                 playingSide == other.playingSide;
     }
 
+    /**
+     * Returns a string representation of the Player object.
+     * This method constructs a string that includes the values of various fields
+     * such as playerId, playingSide, playerName, and isComputer.
+     *
+     * @return A string representation of the current state of the player.
+     */
     @Override
     public String toString() {
         return "Player{" +

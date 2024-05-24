@@ -101,6 +101,7 @@ public class Board implements Serializable {
      *
      * @param player The player to check for a win.
      * @param enemy The opposing player.
+     * @param playerId id of a player(1 or 2)
      * @return true if the player has won, false otherwise.
      */
     public boolean isWinner(Player player, Player enemy, int playerId) {
@@ -305,6 +306,7 @@ public class Board implements Serializable {
      * Retrieves the positions a troop can step on from the specified position.
      *
      * @param offset2D The starting position of the troop.
+     * @param isSilverBottom parameter to know if user playing as silver player
      * @return A list of positions the troop can step on.
      */
     public ArrayList<Offset2D> positionsTroopCanStepOn(Offset2D offset2D, boolean isSilverBottom) {
@@ -327,6 +329,7 @@ public class Board implements Serializable {
      * Checks if the specified position can step to another position.
      *
      * @param offset2D The position to check.
+     * @param isSilverBottom parameter to know if user playing as silver player
      * @return True if the position can step, otherwise false.
      */
     private boolean canStepPosition(Offset2D offset2D, boolean isSilverBottom) {
@@ -347,11 +350,11 @@ public class Board implements Serializable {
      * Retrieves the positions of the player's troops that can step.
      *
      * @param player The player whose troop positions are to be retrieved.
+     * @param isSilverBottom parameter to know if user playing as silver player
      * @return A list of positions of the player's troops that can step.
      */
     public ArrayList<Offset2D> canStepPositions(Player player, boolean isSilverBottom) {
         ArrayList<Offset2D> positionsOfTroop = new ArrayList<>();
-        ArrayList<Offset2D> pos = getPlayersTroopsPositions(player);
 
         for (Offset2D position : getPlayersTroopsPositions(player)) {
             if (canStepPosition(position, isSilverBottom)) {
@@ -382,6 +385,7 @@ public class Board implements Serializable {
      * Retrieves valid step moves for a position by itself.
      *
      * @param position The position to check.
+     * @param isSilverBottom parameter to know if user playing as silver player
      * @return A list of valid step moves.
      */
     public ArrayList<StepMove> getValidStepMovesByItselfForPosition(Offset2D position, boolean isSilverBottom){
@@ -421,6 +425,7 @@ public class Board implements Serializable {
      *
      * @param pullingPiecePosition The position of the pulling piece.
      * @param pulledPiecePosition The position of the pulled piece.
+     * @param isSilverBottom parameter to know if user playing as silver player
      * @return A list of valid pull moves.
      */
     public ArrayList<ComplexMove> getValidPullMovesForPullerAndPulled(Offset2D pullingPiecePosition, Offset2D pulledPiecePosition, boolean isSilverBottom){
@@ -450,6 +455,7 @@ public class Board implements Serializable {
      * Retrieves the positions of possible pulling pieces for the specified position.
      *
      * @param pulledPiecePosition The position to check.
+     * @param isSilverBottom parameter to know if user playing as silver player
      * @return A list of positions of possible pulling pieces.
      */
     public ArrayList<Offset2D> getPositionsOfPossiblePullingPieces(Offset2D pulledPiecePosition, boolean isSilverBottom){
@@ -505,6 +511,7 @@ public class Board implements Serializable {
      * @param player The player whose troop positions are to be retrieved.
      * @param enemy The enemy player.
      * @param gameMode The game mode ("SWITCH", "STEP", "PULL", "PUSH").
+     * @param isSilverBottom parameter to know if user playing as silver player
      * @return A list of positions of the player's troops.
      */
     public ArrayList<Offset2D> getPositionsOfPlayersTroops(Player player, Player enemy, String gameMode, boolean isSilverBottom) {
