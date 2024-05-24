@@ -498,7 +498,7 @@ public class BoardPanel extends JPanel {
      */
     private Offset2D selectPosition(ArrayList<Offset2D> positions, boolean preferTrap, Random random) {
         if (positions.size() <= 1) {
-            return positions.getFirst();
+            return positions.get(0);
         }
 
         if (preferTrap) {

@@ -78,7 +78,7 @@ public class ReplayControllerPanel extends JPanel{
 
         // Action listeners for the control buttons
         nextMove.addActionListener(e -> {
-            if(gameState.getLast() != gameState.get(currentBoard)) {
+            if(gameState.get(gameState.size()-1) != gameState.get(currentBoard)) {
                 currentBoard++;
                 game.getBoard().populateBoardFrom2DString(gameState.get(currentBoard).boardState, player1, player2);
                 boardPanel = new BoardPanel(game);

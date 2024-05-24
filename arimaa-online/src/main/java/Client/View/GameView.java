@@ -125,19 +125,19 @@ public class GameView extends JPanel{
      * @param gameState The saved game state.
      */
     public void continueGame(ArrayList<GameState> gameState) {
-        Player player1 = new Player(1, gameState.getLast().player1.getPlayerName(), false);
-        Player player2 = new Player(2, gameState.getLast().player2.getPlayerName(), gameState.getFirst().vsComputer);
+        Player player1 = new Player(1, gameState.get(gameState.size()-1).player1.getPlayerName(), false);
+        Player player2 = new Player(2, gameState.get(gameState.size()-1).player2.getPlayerName(), gameState.get(0).vsComputer);
         game.setPlayers(player1, player2);
-        game.setCurrentPlayer(gameState.getLast().currentPlayer, gameState.getLast().enemyPlayer);
-        game.getBoard().populateBoardFrom2DString(gameState.getLast().boardState, player1, player2);
+        game.setCurrentPlayer(gameState.get(gameState.size()-1).currentPlayer, gameState.get(gameState.size()-1).enemyPlayer);
+        game.getBoard().populateBoardFrom2DString(gameState.get(gameState.size()-1).boardState, player1, player2);
         boardPanel = new BoardPanel(game);
         boardPanel.setGame(game);
         changeCurrentPanel(boardPanel);
-        controlPanel = new GameControllerPanel(game, boardPanel, gameState.getFirst().vsComputer, 0,this);
+        controlPanel = new GameControllerPanel(game, boardPanel, gameState.get(0).vsComputer, 0,this);
         game.setGameListener(controlPanel);
         currentRightPanel = controlPanel;
         changeRightPanel(currentRightPanel);
-        controlPanel.startTimerWithRemainingTime(gameState.getLast().remainingTime);
+        controlPanel.startTimerWithRemainingTime(gameState.get(gameState.size()-1).remainingTime);
         controlPanel.loadSnapInfo(gameState);
     }
 
@@ -147,10 +147,10 @@ public class GameView extends JPanel{
      * @param gameState The saved replay state.
      */
     public void reviewGame(ArrayList<GameState> gameState) {
-        Player player1 = new Player(1, gameState.getLast().player1.getPlayerName(), false);
-        Player player2 = new Player(2, gameState.getLast().player2.getPlayerName(), false);
+        Player player1 = new Player(1, gameState.get(gameState.size()-1).player1.getPlayerName(), false);
+        Player player2 = new Player(2, gameState.get(gameState.size()-1).player2.getPlayerName(), false);
         game.setPlayers(player1, player2);
-        game.getBoard().populateBoardFrom2DString(gameState.getFirst().boardState, player1, player2);
+        game.getBoard().populateBoardFrom2DString(gameState.get(0).boardState, player1, player2);
         boardPanel = new BoardPanel(game);
         boardPanel.setGame(game);
         changeCurrentPanel(boardPanel);
@@ -174,17 +174,17 @@ public class GameView extends JPanel{
             ArrayList<GameState> gameState = Loader.loadGame(fileToLoad);
 
             //checks for equal game mode of a save file and selected menu and if game is still going on
-            if (gameState != null && !gameState.getLast().isGameFinished && vsComputer == gameState.getFirst().vsComputer) {
+            if (gameState != null && !gameState.get(gameState.size()-1).isGameFinished && vsComputer == gameState.get(0).vsComputer) {
                 game.loadState(gameState);
                 continueGame(gameState);
-            }else if(gameState != null && vsComputer != gameState.getFirst().vsComputer && !vsComputer) {
+            }else if(gameState != null && vsComputer != gameState.get(0).vsComputer && !vsComputer) {
                 JOptionPane.showMessageDialog(
                         null,
                         "The save file is meant for single player mode.",
                         "Load Game",
                         JOptionPane.WARNING_MESSAGE
                 );
-            }else if(gameState != null && vsComputer != gameState.getFirst().vsComputer && vsComputer){
+            }else if(gameState != null && vsComputer != gameState.get(0).vsComputer && vsComputer){
                 JOptionPane.showMessageDialog(
                         null,
                         "The save file is meant for local multiplayer player mode.",
@@ -214,7 +214,7 @@ public class GameView extends JPanel{
             ArrayList<GameState> gameState = Loader.loadGame(fileToLoad);
 
             //checks if game was finished to view replay
-            if (gameState != null && gameState.getLast().isGameFinished) {
+            if (gameState != null && gameState.get(gameState.size()-1).isGameFinished) {
                 game.loadReplayState(gameState);
                 reviewGame(gameState);
             }else{

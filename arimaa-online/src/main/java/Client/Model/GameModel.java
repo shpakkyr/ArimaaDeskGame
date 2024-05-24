@@ -226,14 +226,14 @@ public class GameModel {
      * @param gameState The deque of game states.
      */
     public void loadState(ArrayList<GameState> gameState) {
-        this.player1 = gameState.getLast().player1;
-        this.player2 = gameState.getLast().player2;
-        this.currentPlayer = gameState.getLast().currentPlayer;
-        this.enemyPlayer = gameState.getLast().enemyPlayer;
-        this.winner = gameState.getLast().winner;
-        this.phase = gameState.getLast().phase;
-        this.movesLeft = gameState.getLast().movesLeft;
-        this.isGameFinished = gameState.getLast().isGameFinished;
+        this.player1 = gameState.get(gameState.size()-1).player1;
+        this.player2 = gameState.get(gameState.size()-1).player2;
+        this.currentPlayer = gameState.get(gameState.size()-1).currentPlayer;
+        this.enemyPlayer = gameState.get(gameState.size()-1).enemyPlayer;
+        this.winner = gameState.get(gameState.size()-1).winner;
+        this.phase = gameState.get(gameState.size()-1).phase;
+        this.movesLeft = gameState.get(gameState.size()-1).movesLeft;
+        this.isGameFinished = gameState.get(gameState.size()-1).isGameFinished;
     }
 
     /**
@@ -256,13 +256,13 @@ public class GameModel {
      * @param gameState The deque of game states.
      */
     public void loadReplayState(ArrayList<GameState> gameState) {
-        this.player1 = gameState.getFirst().player1;
-        this.player2 = gameState.getFirst().player2;
-        this.currentPlayer = gameState.getFirst().currentPlayer;
-        this.enemyPlayer = gameState.getFirst().enemyPlayer;
-        this.winner = gameState.getFirst().winner;
-        this.phase = gameState.getFirst().phase;
-        this.movesLeft = gameState.getFirst().movesLeft;
-        this.isGameFinished = gameState.getFirst().isGameFinished;
+        this.player1 = gameState.get(0).player1;
+        this.player2 = gameState.get(0).player2;
+        this.currentPlayer = gameState.get(0).currentPlayer;
+        this.enemyPlayer = gameState.get(0).enemyPlayer;
+        this.winner = gameState.get(0).winner;
+        this.phase = gameState.get(0).phase;
+        this.movesLeft = gameState.get(0).movesLeft;
+        this.isGameFinished = gameState.get(0).isGameFinished;
     }
 }
