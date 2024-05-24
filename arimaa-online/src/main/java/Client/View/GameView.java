@@ -43,7 +43,7 @@ public class GameView extends JPanel implements Runnable{
     public void init() {
         window = new JFrame("Arimaa Game");
         window.setLayout(new BorderLayout());
-        window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
 
         WelcomePanel welcomePanel = new WelcomePanel(game, this);
@@ -70,15 +70,15 @@ public class GameView extends JPanel implements Runnable{
         Player player1 = new Player(1, player1name, false);
         Player player2 = new Player(2, player2name, vsComputer);
         game.setPlayers(player1, player2);
+        game.setCurrentPlayer(player1,player2);
         game.getBoard().populateBoardFrom2DString(GameModel.DEFAULT_BOARD, player1, player2);
         boardPanel = new BoardPanel(game);
         boardPanel.setGame(game);
         changeCurrentPanel(boardPanel);
-        controlPanel = new GameControllerPanel(game, boardPanel, vsComputer, 0);
+        controlPanel = new GameControllerPanel(game, boardPanel, vsComputer, 0, this);
         game.setGameListener(controlPanel);
         currentRightPanel = controlPanel;
         changeRightPanel(currentRightPanel);
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     public void startOnlineGame(String player1name, String player2name, int playerId, int playerEnemyId, Client client) {
@@ -86,6 +86,7 @@ public class GameView extends JPanel implements Runnable{
         Player player1 = new Player(playerId, player1name, false);
         Player player2 = new Player(playerEnemyId, player2name, false);
         game.setPlayers(player1, player2);
+        game.setCurrentPlayer(player1,player2);
         if (playerId == 1)
             game.getBoard().populateBoardFrom2DString(GameModel.DEFAULT_BOARD, player1, player2);
         else
@@ -93,7 +94,7 @@ public class GameView extends JPanel implements Runnable{
         boardPanel = new BoardPanel(game);
         boardPanel.setGame(game);
         changeCurrentPanel(boardPanel);
-        controlPanel = new GameControllerPanel(game, boardPanel, false, playerId);
+        controlPanel = new GameControllerPanel(game, boardPanel, false, playerId, this);
         game.setClient(client);
         controlPanel.setClient(client);
         boardPanel.setClient(client);
@@ -137,17 +138,17 @@ public class GameView extends JPanel implements Runnable{
         Player player1 = new Player(1, gameState.getLast().player1.getPlayerName(), false);
         Player player2 = new Player(2, gameState.getLast().player2.getPlayerName(), gameState.getFirst().vsComputer);
         game.setPlayers(player1, player2);
+        game.setCurrentPlayer(gameState.getLast().currentPlayer, gameState.getLast().enemyPlayer);
         game.getBoard().populateBoardFrom2DString(gameState.getLast().boardState, player1, player2);
         boardPanel = new BoardPanel(game);
         boardPanel.setGame(game);
         changeCurrentPanel(boardPanel);
-        controlPanel = new GameControllerPanel(game, boardPanel, gameState.getFirst().vsComputer, 0);
+        controlPanel = new GameControllerPanel(game, boardPanel, gameState.getFirst().vsComputer, 0,this);
         game.setGameListener(controlPanel);
         currentRightPanel = controlPanel;
         changeRightPanel(currentRightPanel);
         controlPanel.startTimerWithRemainingTime(gameState.getLast().remainingTime);
         controlPanel.loadSnapInfo(gameState);
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     /**

@@ -1,6 +1,7 @@
 package Client.View;
 
 import Client.Model.*;
+import Client.Controller.Launcher;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -118,7 +119,8 @@ public class ReplayControllerPanel extends JPanel{
         });
         returnButton.addActionListener(e -> {
             view.closeWindow();
-            view.init();
+            String[] args = new String[1];
+            Launcher.main(args);
         });
     }
 
