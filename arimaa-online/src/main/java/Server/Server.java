@@ -2,12 +2,14 @@ package Server;
 
 import Client.Model.GameState;
 import Client.Model.Player;
+import Client.View.CountdownTimer;
 
 import javax.sound.midi.Soundbank;
 import java.io.*;
 import java.net.*;
 import java.util.Objects;
 import java.util.concurrent.*;
+import java.util.logging.Logger;
 
 /**
  * The Server class manages connections to clients and handles communication between them.
@@ -107,6 +109,8 @@ public class Server {
         private final String player;
         private boolean flag = false;
         private final boolean bothConnected;
+        private final Logger logger = Logger.getLogger(ClientHandler.class.getName());
+        private final boolean logsOn = true;
 
         /**
          * Constructs a new ClientHandler for the specified client and other client.
@@ -150,6 +154,8 @@ public class Server {
                             System.out.println(messageToShow);
                         } else if (message.equals("sendGameState")) {
                             GameState gameState = (GameState) inObject.readObject();
+                            if (logsOn)
+                                logger.info("Server: I've got a GameState object from " + player + ". \nSending object to another player!");
                             String prepareReceiveObject = "prepareReceiveObject";
                             outObject.writeObject(prepareReceiveObject);
                             outObject.writeObject(gameState);

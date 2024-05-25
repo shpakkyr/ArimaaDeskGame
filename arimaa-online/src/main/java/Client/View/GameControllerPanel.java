@@ -30,7 +30,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
 
     private final BoardPanel boardPanel;
     private final GameModel game;
-    private ArrayList<GameState> gameState = new ArrayList<GameState>();
+    private ArrayList<GameState> gameState = new ArrayList<>();
     private final JPanel gameControllerPanel;
     private CountdownTimer timer;
     private final boolean vsComputer;
@@ -215,12 +215,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
             setTurnFormatting();
             if (client != null) {
                 disableButtons();
-                GameState gameState = game.saveState(timer.getRemainingTime(), vsComputer);
-                try {
-                    client.sendObjectToEnemy(gameState);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
+                CommonMethods.sendGameStateToServer(game, client);
             }
         });
         switchButton.addActionListener(e -> {
@@ -414,27 +409,16 @@ public class GameControllerPanel extends JPanel implements GameListener {
     @Override
     public void onGameEnded(Player winner) {
         boardSnap();
+        disableButtons();
         timer.stopAndLogTime();
         timerLabel.setVisible(false);
         boardPanel.setGameMode(GameMode.NONE);
         boardPanel.handleModeReset();
-        noneButton.setVisible(false);
-        stepButton.setVisible(false);
-        pushButton.setVisible(false);
-        pullButton.setVisible(false);
-        finishButton.setVisible(false);
         giveUpButton.setVisible(false);
-        movesLeftLabel.setVisible(false);
         compButton.setVisible(false);
         saveButton.setVisible(true);
         menuButton.setVisible(true);
-        if (client != null) {
-            try {
-                client.sendMessageToServer("finishCommunicationWithServer");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        CommonMethods.sendGameStateToServer(game, client);
         turnIndicator.setText(winner.getPlayerName() + " won!");
         showWinnerPopup(winner);
     }

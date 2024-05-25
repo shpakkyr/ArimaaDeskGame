@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.io.*;
 import java.net.*;
 import java.nio.Buffer;
+import java.util.logging.Logger;
 
 /**
  * The Client class manages the connection to the game server and handles communication
@@ -22,6 +23,8 @@ public class Client {
     private ObjectOutputStream outObject;
     private ObjectInputStream inObject;
     private boolean flag = false;
+    private final Logger logger = Logger.getLogger(Client.class.getName());
+    private final boolean logsOn = false;
 
     /**
      * The main method for starting the client application for online multiplayer.
@@ -68,6 +71,8 @@ public class Client {
                         Object potentialGameState = inObject.readObject();
                         if (potentialGameState instanceof GameState) {
                             GameState gameState = (GameState) potentialGameState;
+                            if (logsOn)
+                                logger.info(playerName + " received GameState object from player " + playerEnemy);
                             view.updateView(gameState);
                         } else {
                             System.out.println("Expected a Player, but received something else.");

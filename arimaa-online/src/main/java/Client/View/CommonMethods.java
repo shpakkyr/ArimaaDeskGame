@@ -1,7 +1,12 @@
 package Client.View;
 
+import Client.Model.GameModel;
+import Client.Model.GameState;
+import Server.Client;
+
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 /**
  * CommonMethods is a utility class that provides common UI methods for creating and configuring buttons for main menu and sub menu.
@@ -30,5 +35,22 @@ public class CommonMethods{
         button.setPreferredSize(size);
         button.setMaximumSize(size);
         button.setMinimumSize(size);
+    }
+
+    /**
+     * Method is used to send the gameState to server when the step is made by the player, so that another player can update his view
+     *
+     * @param game GameModel object presenting the model part
+     * @param client Client that is sending the gameState
+     */
+    protected static void sendGameStateToServer(GameModel game, Client client) {
+        if (client != null) {
+            GameState gameState = game.saveState(1, false);
+            try {
+                client.sendObjectToEnemy(gameState);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
     }
 }

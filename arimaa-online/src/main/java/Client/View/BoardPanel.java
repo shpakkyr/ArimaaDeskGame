@@ -312,6 +312,7 @@ public class BoardPanel extends JPanel {
         } else if (selectedPositions.size() == 1) {
             switchPieces(selectedPositions.get(0), squarePosition);
             handleModeReset();
+            CommonMethods.sendGameStateToServer(game, client);
         }
     }
 
@@ -338,14 +339,7 @@ public class BoardPanel extends JPanel {
             if (!game.isGameFinished()) {
                 handleModeReset();
                 game.decrementMovesLeft(1);
-                if (client != null) {
-                    GameState gameState = game.saveState(1, false);
-                    try {
-                        client.sendObjectToEnemy(gameState);
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
+                CommonMethods.sendGameStateToServer(game, client);
             }
         }
     }
@@ -388,14 +382,7 @@ public class BoardPanel extends JPanel {
             if (!game.isGameFinished()) {
                 handleModeReset();
                 game.decrementMovesLeft(2);
-                if (client != null) {
-                    GameState gameState = game.saveState(1, false);
-                    try {
-                        client.sendObjectToEnemy(gameState);
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
+                CommonMethods.sendGameStateToServer(game, client);
             }
         }
     }
@@ -436,14 +423,7 @@ public class BoardPanel extends JPanel {
             if (!game.isGameFinished()) {
                 handleModeReset();
                 game.decrementMovesLeft(2);
-                if (client != null) {
-                    GameState gameState = game.saveState(1, false);
-                    try {
-                        client.sendObjectToEnemy(gameState);
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
+                CommonMethods.sendGameStateToServer(game, client);
             }
         }
     }
