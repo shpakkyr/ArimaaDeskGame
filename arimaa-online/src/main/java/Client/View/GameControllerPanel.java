@@ -316,20 +316,15 @@ public class GameControllerPanel extends JPanel implements GameListener {
      *
      * @param loadState An ArrayList of GameState objects to be loaded into the game.
      */
-    public void loadSnapInfo(ArrayList<GameState> loadState){
+    protected void loadSnapInfo(ArrayList<GameState> loadState){
         gameState = (ArrayList<GameState>) loadState.clone();
     }
 
     /**
      * Method to capture the current state of the board and save it to the gameState list for saving game.
      */
-    public void boardSnap(){
+    protected void boardSnap(){
         gameState.add(game.saveState(timer.getRemainingTime(), vsComputer));
-
-        for(int j = 0; j < 8; j++) {
-            for (int i = 0; i < 8; i++) {
-            }
-        }
     }
 
     /**
@@ -337,7 +332,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
      *
      * @param remainingTime The remaining time in milliseconds.
      */
-    public void startTimerWithRemainingTime(long remainingTime) {
+    protected void startTimerWithRemainingTime(long remainingTime) {
         timer = new CountdownTimer((int) (remainingTime / 1000 / 60));
         timer.setRemainingTime(remainingTime);
         timer.setOnTimerEnd(this::onTimerEnd);
@@ -433,6 +428,13 @@ public class GameControllerPanel extends JPanel implements GameListener {
         compButton.setVisible(false);
         saveButton.setVisible(true);
         menuButton.setVisible(true);
+        if (client != null) {
+            try {
+                client.sendMessageToServer("finishCommunicationWithServer");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         turnIndicator.setText(winner.getPlayerName() + " won!");
         showWinnerPopup(winner);
     }
@@ -469,6 +471,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
                 saveButton.setVisible(false);
             }
             else {
+                giveUpButton.setVisible(false);
                 disableButtons();
             }
         } else {
@@ -539,7 +542,7 @@ public class GameControllerPanel extends JPanel implements GameListener {
      * Shows the winner popup with the name of the player who won.
      * @param winner The winner.
      */
-    public void showWinnerPopup(Player winner) {
+    protected void showWinnerPopup(Player winner) {
         String message = winner.getPlayerName() + " won!";
         JOptionPane.showMessageDialog(this, message, "Game Over", JOptionPane.INFORMATION_MESSAGE);
     }

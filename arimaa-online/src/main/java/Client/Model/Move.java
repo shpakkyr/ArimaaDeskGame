@@ -6,7 +6,7 @@ import java.util.Objects;
  * Abstract class representing a move in the game.
  * Implements the MoveDirections interface to provide direction functionality.
  */
-public abstract class Move implements MoveDirections{
+public class Move {
     private final Offset2D from;
     private final Offset2D to;
 
@@ -43,28 +43,5 @@ public abstract class Move implements MoveDirections{
         if (o == null || getClass() != o.getClass()) return false;
         Move move = (Move) o;
         return Objects.equals(from, move.from) && Objects.equals(to, move.to);
-    }
-
-    /**
-     * Returns the direction of the move based on the difference between the starting and ending positions.
-     *
-     * @return The direction of the move, or null if the move does not match any of the defined directions.
-     */
-    @Override
-    public Directions getDirection() {
-        int rowDiff = to.getRow() - from.getRow();
-        int columnDiff = to.getColumn() - from.getColumn();
-
-        if (rowDiff == 1 && columnDiff == 0) {
-            return Directions.NORTH;
-        } else if (rowDiff == -1 && columnDiff == 0) {
-            return Directions.SOUTH;
-        } else if (rowDiff == 0 && columnDiff == 1) {
-            return Directions.RIGHT;
-        } else if (rowDiff == 0 && columnDiff == -1) {
-            return Directions.LEFT;
-        } else {
-            return null;
-        }
     }
 }

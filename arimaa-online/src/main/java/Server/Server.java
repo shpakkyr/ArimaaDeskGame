@@ -150,12 +150,15 @@ public class Server {
                             System.out.println(messageToShow);
                         } else if (message.equals("sendGameState")) {
                             GameState gameState = (GameState) inObject.readObject();
-//                            System.out.println("Received GameState from client: " + player);
-//                            System.out.println("GameState is: " + gameState);
                             String prepareReceiveObject = "prepareReceiveObject";
                             outObject.writeObject(prepareReceiveObject);
                             outObject.writeObject(gameState);
                             outObject.flush();
+                        } else if (message.equals("finishCommunicationWithServer")) {
+                            outObject.writeObject("finishCommunicationWithServer");
+                            outObject.flush();
+                            flag = true;
+                            return;
                         }
                     } else {
                         System.out.println("Received non-string object, handling not implemented.");
@@ -170,8 +173,9 @@ public class Server {
             } finally {
                 try {
                     if (flag) {
-                        inObject.close();
+                        System.out.println("Server is stopping!");
                         outObject.close();
+                        inObject.close();
                         clientSocket.close();
                     }
                 } catch (IOException e) {

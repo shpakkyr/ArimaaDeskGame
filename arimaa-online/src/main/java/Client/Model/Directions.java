@@ -1,6 +1,7 @@
 package Client.Model;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -41,7 +42,7 @@ public enum Directions {
      *
      * @return ArrayList<Directions> - An ArrayList containing the NORTH, SOUTH, LEFT, and RIGHT directions.
      */
-    public static ArrayList<Directions> get4Directions() {
-        return new ArrayList<Directions>(List.of(NORTH, SOUTH, LEFT, RIGHT));
+    public static LinkedList<Directions> get4Directions() {
+        return new LinkedList<Directions>(List.of(NORTH, SOUTH, LEFT, RIGHT));
     }
 }

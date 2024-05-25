@@ -129,7 +129,7 @@ public class ReplayControllerPanel extends JPanel{
      *
      * @param loadState The list of game state snapshots.
      */
-    public void loadSnapInfo(ArrayList<GameState> loadState){
+    protected void loadSnapInfo(ArrayList<GameState> loadState){
         gameState = (ArrayList<GameState>) loadState.clone();
 
         player1 = new Player(1, gameState.get(currentBoard).player1.getPlayerName(), false);

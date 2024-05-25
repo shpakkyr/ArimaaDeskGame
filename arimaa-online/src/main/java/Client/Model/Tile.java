@@ -1,7 +1,9 @@
 package Client.Model;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Represents a tile on the game board, which can contain a troop and a player.
@@ -40,8 +42,8 @@ public class Tile {
      *
      * @return A list of valid directions for the troop.
      */
-    public ArrayList<Directions> troopValidDirections(boolean isSilverBottom) {
-        ArrayList<Directions> troopDirections =  new ArrayList<>(List.of(Directions.NORTH, Directions.SOUTH, Directions.LEFT, Directions.RIGHT));
+    public List<Directions> troopValidDirections(boolean isSilverBottom) {
+        List<Directions> troopDirections =  new LinkedList<>(List.of(Directions.NORTH, Directions.SOUTH, Directions.LEFT, Directions.RIGHT));
         if(player.getPlayingSide() == PlayingSide.GOLD && troop.type() == TroopType.RABBIT && !isSilverBottom) {
             troopDirections.remove(Directions.SOUTH);
         } else if (player.getPlayingSide() == PlayingSide.SILVER && troop.type() == TroopType.RABBIT && !isSilverBottom) {

@@ -1,6 +1,7 @@
 package Client.Model;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,7 +34,7 @@ public class Offset2D {
     /**
      * List of predefined trap offsets on the board.
      */
-    public static final ArrayList<Offset2D> TRAP_OFFSET = new ArrayList<>(
+    public static final LinkedList<Offset2D> TRAP_OFFSET = new LinkedList<>(
             List.of(
                     new Offset2D(2, 2),
                     new Offset2D(2, 5),
@@ -45,7 +46,7 @@ public class Offset2D {
     /**
      * List of predefined silver winning condition offsets on the board.
      */
-    public static final ArrayList<Offset2D> SILVER_WINNING_CONDITION = new ArrayList<>(
+    public static final LinkedList<Offset2D> SILVER_WINNING_CONDITION = new LinkedList<>(
             List.of(
                     new Offset2D(7, 0),
                     new Offset2D(7, 1),
@@ -61,7 +62,7 @@ public class Offset2D {
     /**
      * List of predefined gold winning condition offsets on the board.
      */
-    public static final ArrayList<Offset2D> GOLD_WINNING_CONDITION = new ArrayList<>(
+    public static final LinkedList<Offset2D> GOLD_WINNING_CONDITION = new LinkedList<>(
             List.of(
                     new Offset2D(0, 0),
                     new Offset2D(0, 1),
@@ -80,8 +81,8 @@ public class Offset2D {
      * @param offset2D The offset to get positions around.
      * @return A list of positions around the specified offset.
      */
-    public static ArrayList<Offset2D> positionsAround(Offset2D offset2D) {
-        ArrayList<Offset2D> positionsAround = new ArrayList<>();
+    public static LinkedList<Offset2D> positionsAround(Offset2D offset2D) {
+        LinkedList<Offset2D> positionsAround = new LinkedList<>();
 
         for (int i = -1; i < 2; i += 2) {
             int newRow = offset2D.row + i;
@@ -116,18 +117,18 @@ public class Offset2D {
     /**
      * Gets the adjacent positions in the specified directions.
      *
-     * @param directionArrayList The list of directions to get adjacent positions.
+     * @param directionLinkedList The list of directions to get adjacent positions.
      * @return A list of adjacent positions.
      */
-    public ArrayList<Offset2D> getAdjacentPositions(ArrayList<Directions> directionArrayList) {
-        ArrayList<Offset2D> positionsArrayList = new ArrayList<>();
-        for (Directions direction : directionArrayList) {
+    public List<Offset2D> getAdjacentPositions(List<Directions> directionLinkedList) {
+        List<Offset2D> positionsLinkedList = new LinkedList<>();
+        for (Directions direction : directionLinkedList) {
             Offset2D adjacentPosition = getAdjacentPosition(direction);
             if (adjacentPosition != null) {
-                positionsArrayList.add(adjacentPosition);
+                positionsLinkedList.add(adjacentPosition);
             }
         }
-        return positionsArrayList;
+        return positionsLinkedList;
     }
 
     /**

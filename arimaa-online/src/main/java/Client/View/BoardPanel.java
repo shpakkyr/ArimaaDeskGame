@@ -10,6 +10,7 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -114,7 +115,7 @@ public class BoardPanel extends JPanel {
      * @param offset2D The position of the square.
      * @param color    The color to fill the square with.
      */
-    public void fillSquareWithColor(Offset2D offset2D, Color color) {
+    private void fillSquareWithColor(Offset2D offset2D, Color color) {
         JPanel square = tiles[offset2D.getRow()][offset2D.getColumn()];
         square.setBackground(color);
         square.revalidate();
@@ -127,7 +128,7 @@ public class BoardPanel extends JPanel {
      * @param positions The positions of the squares to fill.
      * @param color     The color to fill the squares with.
      */
-    public void fillSquaresWithColor(ArrayList<Offset2D> positions, Color color) {
+    private void fillSquaresWithColor(List<Offset2D> positions, Color color) {
         for (Offset2D position : positions) {
             fillSquareWithColor(position, color);
         }
@@ -136,7 +137,7 @@ public class BoardPanel extends JPanel {
     /**
      * Resets the colors of all squares on the board to their default colors.
      */
-    public void resetSquaresColors() {
+    protected void resetSquaresColors() {
         for (int i = 0; i < Board.DIMENSION; i++) {
             for (int j = 0; j < Board.DIMENSION; j++) {
                 Color squareColor = Color.DARK_GRAY;
@@ -154,7 +155,7 @@ public class BoardPanel extends JPanel {
      *
      * @param stepMove The step move to execute.
      */
-    public void stepMovePiece(StepMove stepMove) {
+    protected void stepMovePiece(StepMove stepMove) {
         game.getBoard().makeStepMove(stepMove);
         fillSquares();
         resetSquaresColors();
@@ -165,7 +166,7 @@ public class BoardPanel extends JPanel {
      *
      * @param pullMove The pull move to execute.
      */
-    public void pullMovePieces(ComplexMove pullMove) {
+    protected void pullMovePieces(ComplexMove pullMove) {
         StepMove pullingPieceMove = new StepMove(pullMove.getFrom(), pullMove.getTo());
         stepMovePiece(pullingPieceMove);
         checkTraps();
@@ -178,7 +179,7 @@ public class BoardPanel extends JPanel {
      *
      * @param pushMove The push move to execute.
      */
-    public void pushMovePieces(ComplexMove pushMove) {
+    protected void pushMovePieces(ComplexMove pushMove) {
         StepMove pushedPieceMove = new StepMove(pushMove.getMovedPieceFrom(), pushMove.getMovedPieceTo());
         stepMovePiece(pushedPieceMove);
         checkTraps();
@@ -192,7 +193,7 @@ public class BoardPanel extends JPanel {
      * @param position1 The first position.
      * @param position2 The second position.
      */
-    public void switchPieces(Offset2D position1, Offset2D position2) {
+    protected void switchPieces(Offset2D position1, Offset2D position2) {
         game.getBoard().switchTroops(position1, position2);
         fillSquares();
         resetSquaresColors();
@@ -201,7 +202,7 @@ public class BoardPanel extends JPanel {
     /**
      * Handles resetting the board based on the current game mode.
      */
-    public void handleModeReset() {
+    protected void handleModeReset() {
         resetSquaresColors();
         boolean isSilverBottom = client != null && game.getCurrentPlayer().getPlayerId() == 2;
         switch (currentMode) {
@@ -222,7 +223,7 @@ public class BoardPanel extends JPanel {
      * @param square The square to get the position of.
      * @return The position of the square.
      */
-    public Offset2D getPositionFromSquare(JPanel square) {
+    private Offset2D getPositionFromSquare(JPanel square) {
         for (int i = 0; i < Board.DIMENSION; i++) {
             for (int j = 0; j < Board.DIMENSION; j++) {
                 if (tiles[i][j].equals(square)) {
@@ -239,7 +240,7 @@ public class BoardPanel extends JPanel {
      * @param color The color to search for.
      * @return A list of positions of squares with the specified color.
      */
-    public ArrayList<Offset2D> getPositionsOfSquaresWithColor(Color color) {
+    protected ArrayList<Offset2D> getPositionsOfSquaresWithColor(Color color) {
         ArrayList<Offset2D> positionsOfSquares = new ArrayList<>();
         for (int i = 0; i < Board.DIMENSION; i++) {
             for (int j = 0; j < Board.DIMENSION; j++) {
@@ -452,7 +453,7 @@ public class BoardPanel extends JPanel {
      *
      * @param position The position to remove the troop from.
      */
-    public void removeTroopAt(Offset2D position) {
+    protected void removeTroopAt(Offset2D position) {
         game.getBoard().removeTroop(position);
         fillSquares();
         resetSquaresColors();
@@ -475,7 +476,7 @@ public class BoardPanel extends JPanel {
      *
      * @param preferTrap Whether to prefer trap squares.
      */
-    public void clickOnRandomWhiteSquare(boolean preferTrap) {
+    protected void clickOnRandomWhiteSquare(boolean preferTrap) {
         ArrayList<Offset2D> positions = getPositionsOfSquaresWithColor(Color.WHITE);
         Random random = new Random();
 

@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 /**
  * The WelcomePanel class represents the initial welcome screen for the game.
@@ -97,7 +98,11 @@ public class WelcomePanel extends JPanel {
                 String playerName = JOptionPane.showInputDialog(view.getWindow(), "Enter your name:");
                 // Show the new game dialog immediately
                 new Thread(() -> {
-                    Client.main(new String[]{playerName}, view);
+                    try {
+                        Client.main(new String[]{playerName}, view);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }).start();
             }
         });

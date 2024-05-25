@@ -142,7 +142,7 @@ public class GameView extends JPanel{
      *
      * @param gameState The saved game state.
      */
-    public void continueGame(ArrayList<GameState> gameState) {
+    private void continueGame(ArrayList<GameState> gameState) {
         Player player1 = new Player(1, gameState.get(gameState.size()-1).player1.getPlayerName(), false);
         Player player2 = new Player(2, gameState.get(gameState.size()-1).player2.getPlayerName(), gameState.get(0).vsComputer);
         game.setPlayers(player1, player2);
@@ -164,7 +164,7 @@ public class GameView extends JPanel{
      *
      * @param gameState The saved replay state.
      */
-    public void reviewGame(ArrayList<GameState> gameState) {
+    private void reviewGame(ArrayList<GameState> gameState) {
         Player player1 = new Player(1, gameState.get(gameState.size()-1).player1.getPlayerName(), false);
         Player player2 = new Player(2, gameState.get(gameState.size()-1).player2.getPlayerName(), false);
         game.setPlayers(player1, player2);
@@ -183,7 +183,7 @@ public class GameView extends JPanel{
      *
      * @param vsComputer Whether the game is against a computer.
      */
-    public void loadSave(boolean vsComputer) {
+    protected void loadSave(boolean vsComputer) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Load Game");
         int userSelection = fileChooser.showOpenDialog(null);
@@ -223,7 +223,7 @@ public class GameView extends JPanel{
     /**
      * Loads a game replay from a file.
      */
-    public void loadReplay() {
+    protected void loadReplay() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Load Replay");
         int userSelection = fileChooser.showOpenDialog(null);
@@ -252,7 +252,7 @@ public class GameView extends JPanel{
      * @param parentFrame The parent frame for the dialog.
      * @param vsComputer  Whether the game is against a computer.
      */
-    public void showNewGameDialog(JFrame parentFrame, boolean vsComputer) {
+    protected void showNewGameDialog(JFrame parentFrame, boolean vsComputer) {
         String gameType = vsComputer ? "single-player" : "multiplayer";
         JDialog newGameDialog = new JDialog(parentFrame, "New " + gameType + " game", true);
         newGameDialog.setLayout(new GridBagLayout());
@@ -317,7 +317,7 @@ public class GameView extends JPanel{
      *
      * @param newPanel The new panel to be displayed.
      */
-    public void changeCurrentPanel(JPanel newPanel) {
+    protected void changeCurrentPanel(JPanel newPanel) {
         window.remove(currentPanel);
         window.add(newPanel, BorderLayout.CENTER);
         currentPanel = newPanel;
@@ -330,7 +330,7 @@ public class GameView extends JPanel{
      *
      * @param newPanel The new panel to be displayed.
      */
-    public void changeRightPanel(JPanel newPanel) {
+    protected void changeRightPanel(JPanel newPanel) {
         window.remove(currentRightPanel);
         window.add(newPanel, BorderLayout.EAST);
         currentRightPanel = newPanel;
@@ -342,7 +342,7 @@ public class GameView extends JPanel{
     /**
      * Closes the game window.
      */
-    public void closeWindow(){
+    protected void closeWindow(){
         window.dispose();
     }
 

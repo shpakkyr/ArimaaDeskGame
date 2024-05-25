@@ -14,7 +14,7 @@ public class CommonMethods{
      * @param text The text to be displayed on the button.
      * @return A JButton with the specified text and centered alignment.
      */
-    public static JButton createButton(String text) {
+    protected static JButton createButton(String text) {
         JButton button = new JButton(text);
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
         return button;
@@ -26,7 +26,7 @@ public class CommonMethods{
      * @param button The button to be resized.
      * @param size   The dimension to set as the size for the button.
      */
-    public static void setButtonSize(JButton button, Dimension size) {
+    protected static void setButtonSize(JButton button, Dimension size) {
         button.setPreferredSize(size);
         button.setMaximumSize(size);
         button.setMinimumSize(size);

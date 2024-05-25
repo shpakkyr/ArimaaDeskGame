@@ -21,6 +21,7 @@ public class Client {
     private Socket socket;
     private ObjectOutputStream outObject;
     private ObjectInputStream inObject;
+    private boolean flag = false;
 
     /**
      * The main method for starting the client application for online multiplayer.
@@ -28,7 +29,7 @@ public class Client {
      * @param args Command-line arguments, where the first argument is the player's name.
      * @param view The GameView object for managing the game UI.
      */
-    public static void main(String[] args, GameView view) {
+    public static void main(String[] args, GameView view) throws IOException {
         Client client = new Client();
         client.startClient(args, view);
     }
@@ -41,7 +42,7 @@ public class Client {
      * @param args Command-line arguments, where the first argument is the player's name.
      * @param view The GameView object for managing the game UI.
      */
-    public void startClient(String[] args, GameView view) {
+    public void startClient(String[] args, GameView view) throws IOException {
         try (Socket socket = new Socket(SERVER_IP, SERVER_PORT)) {
             this.socket = socket;
             OutputStream os = socket.getOutputStream();
@@ -81,6 +82,10 @@ public class Client {
                         SwingUtilities.invokeLater(() -> {
                             view.startOnlineGame(playerName, playerEnemy, playerId, playerEnemyId, this);
                         });
+                    } else if (message.equals("finishCommunicationWithServer")) {
+                        System.out.println("I'm " + playerName + " finishing communication with server");
+                        flag = true;
+                        break;
                     }
                 } else {
                     System.out.println("Received non-string object, handling not implemented.");
@@ -96,6 +101,12 @@ public class Client {
             ex.printStackTrace();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
+        } finally {
+            if (flag) {
+                inObject.close();
+                outObject.close();
+                socket.close();
+            }
         }
     }
 
@@ -108,5 +119,15 @@ public class Client {
     public void sendObjectToEnemy(GameState gameState) throws IOException {
         outObject.writeObject("sendGameState");
         outObject.writeObject(gameState);
+    }
+
+    /**
+     * Sends the message to the server.
+     *
+     * @param message The message that should be sent.
+     * @throws IOException If an I/O error occurs while sending the game state.
+     */
+    public void sendMessageToServer(String message) throws IOException {
+        outObject.writeObject(message);
     }
 }
